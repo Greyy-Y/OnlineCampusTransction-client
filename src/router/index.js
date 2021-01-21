@@ -5,17 +5,42 @@ import Index from "../views/Index.vue";
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: "/",
-    name: "Index",
-    component: Index
-  },
+	/**
+	 * 首页
+	 */
+	{
+		path: "/",
+		redirect: "Index",
+	},
+	{
+		path: "/index",
+		name: "Index",
+		component: Index,
+	},
+	//二手
+	{
+		path: "/goods",
+		name: "Goods",
+		component: () => import("../views/Goods/index.vue"),
+	},
+	//求购
+	{
+		path: "/tobuy",
+		name: "ToBuy",
+		component: () => import("../views/ToBuy/index.vue"),
+	},
+	//登录
+	{
+		path: "/login",
+		name: "Login",
+		component: () => import("../views/Login/index.vue"),
+	},
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
+	mode: "history",
+	base: process.env.BASE_URL,
+	routes,
 });
 
 export default router;

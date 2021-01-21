@@ -1,15 +1,14 @@
 <template>
 	<div class="product-card">
 		<el-card :body-style="{ padding: '0px' }" class="card">
-			<img
-				src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-				class="image"
-			/>
+			<img :src="imgSrc" class="image" />
 			<div style="padding: 14px;">
-				<span>好吃的汉堡</span>
+				<span style="font-size:1.1rem">{{ productName }}</span>
 				<div class="bottom clearfix">
+					{{ `￥` + productPrice }}
+					<br /><br />
 					<time class="time">{{ currentDate }}</time>
-					<el-button type="text" class="button">操作按钮</el-button>
+					<!-- <el-button type="text" class="button">操作按钮</el-button> -->
 				</div>
 			</div>
 		</el-card>
@@ -19,11 +18,14 @@
 <script>
 	export default {
 		name: "ProductCard",
+		props: ["imgSrc", "productName", "productPrice"],
 		data() {
 			return {
 				currentDate: new Date(),
+				// src: this.imageSrc,
 			};
 		},
+		methods: {},
 	};
 </script>
 
@@ -59,6 +61,6 @@
 	}
 	.card {
 		width: 180px;
-		margin: 0 26px;
+		margin: 5px 26px;
 	}
 </style>

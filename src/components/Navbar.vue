@@ -6,11 +6,17 @@
 					<img src="../assets/rock.jpg" />
 				</div>
 				<div class="nav-main">
-					<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-						<el-menu-item index="1">首页</el-menu-item>
-						<el-menu-item index="2">二手</el-menu-item>
-						<el-menu-item index="3">求购</el-menu-item>
-						<el-menu-item index="4">校园动态</el-menu-item>
+					<!-- 解决LEMENT-UI中EL-MENU组件作为VUE-ROUTER模式在刷新页面后DEFAULT-ACTIVE属性与当前路由页面不一致问题的方法 -->
+					<el-menu
+						:default-active="$route.path"
+						class="el-menu-demo"
+						mode="horizontal"
+						@select="handleSelect"
+						:router="true"
+					>
+						<el-menu-item index="/index">首页</el-menu-item>
+						<el-menu-item index="/goods">二手</el-menu-item>
+						<el-menu-item index="/tobuy">求购</el-menu-item>
 					</el-menu>
 				</div>
 			</div>
@@ -32,7 +38,7 @@
 						<span class="username">{{ username }}</span>
 					</div>
 					<div class="login">
-						<el-link type="primary" :underline="false">登录</el-link> |
+						<el-link type="primary" :underline="false" @click="jumpToLogin">登录</el-link> |
 						<el-link type="primary" :underline="false">注册</el-link>
 					</div>
 				</div>
@@ -46,14 +52,15 @@
 		name: "Navbar",
 		data() {
 			return {
-				activeIndex: "1",
-				activeIndex2: "",
 				username: "supercxx",
 			};
 		},
 		methods: {
-			handleSelect(key, keyPath) {
-				console.log(key, keyPath);
+			handleSelect(key) {
+				this.activeIndex = key;
+			},
+			jumpToLogin() {
+				this.$router.push("Login");
 			},
 		},
 	};
@@ -108,8 +115,8 @@
 							padding: 0 8px;
 						}
 					}
-					.login {
-					}
+					// .login {
+					// }
 				}
 			}
 		}

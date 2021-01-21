@@ -26,7 +26,7 @@
 		background: black;
 		display: flex;
 		justify-content: space-around;
-		color: #264653;
+		color: #9b9dad;
 	}
 	.footer-about {
 		.footer-about-content {

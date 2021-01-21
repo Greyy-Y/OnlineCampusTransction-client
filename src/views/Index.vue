@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<Navbar />
-		<Main />
+		<IndexMain />
 		<Footer />
 		<!-- <Menu /> -->
 	</div>
@@ -9,18 +9,30 @@
 
 <script>
 	// @ is an alias to /src
+
+	import IndexMain from "@/components/IndexMain";
 	import Navbar from "@/components/Navbar";
-	import Main from "@/components/Main";
 	import Footer from "@/components/Footer";
 	// import Menu from "@/components/menuContent";
+
 	export default {
 		name: "Index",
 		components: {
+			IndexMain,
 			Navbar,
-			Main,
 			Footer,
 			// Menu,
 		},
+		data() {
+			return {};
+		},
 	};
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.home {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-content: center;
+	}
+</style>
