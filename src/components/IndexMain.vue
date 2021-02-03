@@ -1,55 +1,21 @@
 <template>
 	<div class="container">
-		<div class="swiper">
-			<el-carousel :interval="3000" height="480px">
-				<el-carousel-item>
+		<div class="swiper" v-loading="loading" element-loading-text="加载中...">
+			<el-carousel :interval="3000" height="400px">
+				<el-carousel-item v-for="(item, index) in recommendItem" :key="index" @click="toDetail(recommendItem[index])">
 					<div class="recommend">
 						<div class="recommend-item">
 							<div class="recommend-item-title">
-								<h1>{{ recommendItem[0].title }}</h1>
+								<h1>{{ item.good.name }}</h1>
 							</div>
 							<div class="recommend-item-desc">
 								<p>
-									{{ recommendItem[0].desc }}
+									{{ item.good.desc }}
 								</p>
 							</div>
 						</div>
 						<div class="recommend-item-pic">
-							<img src="../assets/MacBookAir.jpeg" />
-						</div>
-					</div>
-				</el-carousel-item>
-				<el-carousel-item>
-					<div class="recommend">
-						<div class="recommend-item">
-							<div class="recommend-item-title">
-								<h1>{{ recommendItem[1].title }}</h1>
-							</div>
-							<div class="recommend-item-desc">
-								<p>
-									{{ recommendItem[1].desc }}
-								</p>
-							</div>
-						</div>
-						<div class="recommend-item-pic">
-							<img src="../assets/jsbook.jpg" />
-						</div>
-					</div>
-				</el-carousel-item>
-				<el-carousel-item>
-					<div class="recommend">
-						<div class="recommend-item">
-							<div class="recommend-item-title">
-								<h1>{{ recommendItem[2].title }}</h1>
-							</div>
-							<div class="recommend-item-desc">
-								<p>
-									{{ recommendItem[2].desc }}
-								</p>
-							</div>
-						</div>
-						<div class="recommend-item-pic">
-							<img :src="recommendItem[2].src" />
+							<img :src="item.good.pic" />
 						</div>
 					</div>
 				</el-carousel-item>
@@ -60,106 +26,75 @@
 		<div class="featured-product">
 			<div class="featured-product-title"><h2>精选商品</h2></div>
 			<div class="card-contaner">
-				<ProductCard
-					:imgSrc="featuredProductSrc[0].src"
-					:productName="featuredProductSrc[0].name"
-					:productPrice="featuredProductSrc[0].price"
-				></ProductCard>
-				<ProductCard
-					:imgSrc="featuredProductSrc[1].src"
-					:productName="featuredProductSrc[1].name"
-					:productPrice="featuredProductSrc[1].price"
-				></ProductCard>
-				<ProductCard
-					:imgSrc="featuredProductSrc[2].src"
-					:productName="featuredProductSrc[2].name"
-					:productPrice="featuredProductSrc[2].price"
-				></ProductCard>
-				<ProductCard
-					:imgSrc="featuredProductSrc[3].src"
-					:productName="featuredProductSrc[3].name"
-					:productPrice="featuredProductSrc[3].price"
-				></ProductCard>
-				<ProductCard
-					:imgSrc="featuredProductSrc[4].src"
-					:productName="featuredProductSrc[4].name"
-					:productPrice="featuredProductSrc[4].price"
-				></ProductCard>
+				<featuredProductCard
+					v-for="(item, index) in featuredItem"
+					:key="index"
+					:imgSrc="item.good.pic"
+					:productName="item.good.name"
+					:productPrice="item.good.price"
+					:updatedAt="item.good.updatedAt"
+					@click="toDetail(featuredItem[index])"
+				></featuredProductCard>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import { GetGoods } from "@/api/goods";
-	import ProductCard from "@/components/ProductCard";
+	import { GetRecommend, GetFeatured } from "@/api/goods";
+	import featuredProductCard from "@/components/featuredProductCard";
 	export default {
 		name: "IndexMain",
 		components: {
-			ProductCard,
+			featuredProductCard,
 		},
 		data() {
 			return {
-				data: null,
-				recommendItem: [
-					{
-						title: "Apple MacBook Air 13.3英寸电脑",
-						desc: `Apple M1 芯片的到来，让这部我们最薄、最轻的笔记本电脑由内在焕然一新。与前代相比，中央处理器最高提速至 3.5
-							倍，图形处理器最高提速至 5 倍，先进的神经网络引擎将机器学习最高提速至 9 倍；续航能力创下 MacBook Air
-							之最；无风扇设计，运行时安静无声。这个身手轻巧的行动派，现在实力更是强到离谱。`,
-						src: "../assets/MacBookAir.jpeg",
-					},
-					{
-						title: "Javascript 高级程序设计",
-						desc: `经典红宝书，前端必看。`,
-						src: "../assets/agao1.jpg",
-					},
-					{
-						title: "吉安娜手办",
-						desc: `吉安娜·普罗德摩尔是暴雪娱乐公司出品的即时战略游戏《魔兽争霸Ⅲ》及大型多人在线角色扮演游戏《魔兽世界》中的人类角色。
-	法力强大的的法师吉安娜·普罗德摩尔曾是已被摧毁的塞拉摩统治者、肯瑞托领袖，现在是库尔提拉斯的海军统帅。`,
-						src: "http://localhost:8080/img/jina.db0e8a1f.jpg",
-					},
-				],
-				featuredProductSrc: [
-					{ name: "Javascript 高级程序设计", src: "/img/jsbook.fbf42bd7.jpg", price: 39 },
-					{ name: "MacBook", src: "http://localhost:8080/img/mac0.9d7845d7.jpg", price: 3999 },
-					{ name: "AirPods", src: "http://localhost:8080/img/airpods.f2dd609d.jpeg", price: 266 },
-					{ name: "山地车", src: "http://localhost:8080/img/bike.14c2a529.jpeg", price: 199 },
-					{ name: "吉安娜手办", src: "http://localhost:8080/img/jina.db0e8a1f.jpg", price: 299 },
-				],
+				loading: true,
+				data: [],
+				// 推荐商品
+				recommendItem: [],
+				//精选商品
+				featuredItem: [],
 			};
 		},
 		methods: {
-			handlePre() {
-				console.log("you clicked last-one button");
-				if (this.recommendItemId === 0) {
-					this.recommendItemId = 2;
-				} else {
-					this.recommendItemId -= 1;
-				}
+			async getRecommend() {
+				const res = await GetRecommend();
+				//将请求的内容缓存到data
+				let data = res.data.data;
+				//获取推荐商品
+				this.recommendItem = data;
+				//循环遍历 更新推荐商品图片路径
+				this.recommendItem.map((item) => {
+					item.good.pic.forEach((value) => {
+						item.good.pic = "http://localhost:3000/" + value;
+					});
+				});
+				this.loading = false;
 			},
-			handleNext() {
-				console.log("you clicked next-one button");
-				if (this.recommendItemId === 2) {
-					this.recommendItemId = 0;
-				} else {
-					this.recommendItemId += 1;
-				}
+			async getFeatured() {
+				const res = await GetFeatured();
+				let data = res.data.data;
+				//获取推荐商品
+				this.featuredItem = data;
+				//循环遍历 更新推荐商品图片路径
+				this.featuredItem.map((item) => {
+					item.good.pic.forEach((element) => {
+						item.good.pic = "http://localhost:3000/" + element;
+					});
+					item.good.updatedAt = this.dayjs(item.good.updatedAt).format("YYYY-MM-DD");
+				});
+			},
+			toDetail(item) {
+				console.log(item);
+				this.$router.push({ name: "Goods_detail", params: { gid: item._id } });
 			},
 		},
-		// computed: {
-		// 	currentRecommendItemId: function() {
-		// 		return this.recommendItemId;
-		// 	},
-		// currentRecommendItemPic: function() {
-		// 	return this.recommendItem[recommendItemId].src;
-		// },
-		mounted: function() {
-			GetGoods().then((res) => {
-				(this.data = res.data.data), console.log("z这是从后台获取回来的data");
-				console.log(this.data);
-			});
+		mounted() {
+			this.getRecommend();
+
+			this.getFeatured();
 		},
 	};
 </script>
@@ -173,15 +108,16 @@
 	}
 	.swiper {
 		width: 80vw;
-		height: 480px;
-		margin-top: 40px;
+		height: 400px;
+		margin-top: 20px;
 		.recommend {
-			height: 480px;
+			height: 400px;
 			display: flex;
 			border-radius: 20px;
-			background-color: rgb(228, 227, 227);
+			background-color: rgb(247, 247, 247);
 			.recommend-item {
 				flex: 1;
+				min-width: 400px;
 				justify-content: center;
 				align-items: center;
 				display: flex;
@@ -201,10 +137,8 @@
 				align-items: center;
 				display: flex;
 				img {
-					width: 500px;
-					height: 400px;
-					// object-fit: cover;
-					// object-fit: fill;
+					width: 450px;
+					height: 350px;
 					object-fit: contain;
 				}
 			}
@@ -215,18 +149,19 @@
 		min-width: 830px;
 		color: #264653;
 		width: 80vw;
-		margin-top: 40px;
+		margin: 6px 10px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
-		background: rgb(228, 227, 227);
-		.featured-product-title {
-			padding-bottom: 10px;
-		}
+		background: rgb(247, 247, 247);
+
 		.card-contaner {
 			display: flex;
 			justify-content: space-around;
 		}
+	}
+	.el-card__body {
+		cursor: pointer;
 	}
 </style>

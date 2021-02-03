@@ -3,7 +3,10 @@
 		<div class="footer-about">
 			<h3>关于</h3>
 			<div class="footer-about-content">
-				<span>来自灰柴嘻嘻</span
+				<a href="https://github.com/Greyy-Y/OnlineCampusTransction-client"
+					><i class="iconfont icon-github" size="medium"></i
+				></a>
+				<span> 来自于灰柴嘻嘻</span
 				><a href="https://github.com/Greyy-Y" title="Greyy-Y">
 					<el-avatar size="small" src="https://web-music.oss-cn-shenzhen.aliyuncs.com/avatar/grey.jpg"></el-avatar>
 				</a>
@@ -22,7 +25,7 @@
 	footer {
 		margin: 5px 0;
 		width: 100vw;
-		height: 120px;
+		height: 100px;
 		background: black;
 		display: flex;
 		justify-content: space-around;
@@ -36,8 +39,8 @@
 			justify-items: center;
 		}
 		a {
-			transform: translateY(5px);
-			padding-left: 5px;
+			// transform: translateY(5px);
+			padding: 0 10px;
 		}
 	}
 	.footer-rights {

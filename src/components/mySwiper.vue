@@ -1,34 +1,34 @@
 <template>
-	<el-carousel :interval="4000" type="card" height="200px">
-		<el-carousel-item v-for="(item, index) in recommendItem" :key="index">
-			<h3 class="medium">{{ item[index].title }}</h3>
-		</el-carousel-item>
-	</el-carousel>
+  <el-carousel :interval="4000" type="card" height="200px">
+    <el-carousel-item v-for="(item, index) in recommendItem" :key="index">
+      <h3 class="medium">{{ item[index].title }}</h3>
+    </el-carousel-item>
+  </el-carousel>
 </template>
 
 <script>
-	export default {
-		name: "MySwiper",
-		data() {
-			return {};
-		},
-	};
+export default {
+  name: "MySwiper",
+  data() {
+    return {};
+  }
+};
 </script>
 
 <style>
-	.el-carousel__item h3 {
-		color: #475669;
-		font-size: 14px;
-		opacity: 0.75;
-		line-height: 200px;
-		margin: 0;
-	}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
 
-	.el-carousel__item:nth-child(2n) {
-		background-color: #99a9bf;
-	}
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
 
-	.el-carousel__item:nth-child(2n + 1) {
-		background-color: #d3dce6;
-	}
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
 </style>

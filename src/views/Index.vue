@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<Navbar />
-		<IndexMain />
+		<IndexMain class="banner" />
 		<Footer />
 		<!-- <Menu /> -->
 	</div>

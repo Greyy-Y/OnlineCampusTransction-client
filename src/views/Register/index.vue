@@ -1,12 +1,12 @@
 <template>
 	<div class="container-wrapper">
-		<div class="container">
+		<div class="container" ref="container">
 			<div class="app front">
 				<div class="header">
-					<span class="info">登 录</span>
+					<span class="info">注 册</span>
 					<div class="prompt">
-						<span class="ask">还没有账号?</span>
-						<button class="btn signup" @click="jumpToRegister">注册</button>
+						<span class="ask">已经有账号?</span>
+						<button class="btn signup" @click="jumpToLogin">登录</button>
 					</div>
 				</div>
 				<div class="main">
@@ -15,15 +15,27 @@
 							<div class="textbox">
 								<input type="text" v-model="user_email" />
 								<span class="input_detail">邮箱</span>
+								<span v-if="!this.user_email" class="validate"></span>
+								<span v-else-if="validateEmail" class="validate">邮箱格式不正确</span>
 							</div>
+							<!-- <div class="textbox" v-if="validateEmail">邮箱格式不正确</div> -->
 							<div class="textbox">
 								<input type="password" v-model="user_password" />
 								<span class="input_detail">密码</span>
+								<span class="validate" v-if="includeChinese1">密码不能包含中文字符</span>
+								<span class="validate" v-else-if="user_password.length === 0"></span>
+								<span class="validate" v-else-if="user_password.length < 6 || user_password.length > 21">
+									密码长度必须大于6小于20位
+								</span>
+							</div>
+							<div class="textbox">
+								<input type="password" v-model="user_password1" />
+								<span class="input_detail">重复密码</span>
 							</div>
 						</form>
 					</div>
 					<div>
-						<button class="btn login" @click="handleLogin">登录</button>
+						<button class="btn login" @click="handleRegister">注册</button>
 					</div>
 				</div>
 			</div>
@@ -32,57 +44,61 @@
 </template>
 
 <script>
-	import { Login } from "@/api/login";
+	import { Register } from "@/api/register";
 	export default {
-		name: "login",
+		name: "register",
 		data() {
 			return {
-				user_email: "lawfired@gmail.com",
-				user_password: "123456",
+				user_email: "",
+				user_password: "",
+				user_password1: "",
 			};
 		},
 		methods: {
-			jumpToRegister() {
-				this.$router.push("/register");
+			jumpToLogin() {
+				this.$router.push("/login");
 			},
-			handleLogin() {
-				if (!this.user_email) {
+			handleRegister() {
+				console.log("about to register");
+				if (this.user_email.length === 0 || this.user_password.length === 0) {
 					this.$message({
+						message: "用户名和密码不能为空！",
 						type: "warning",
-						message: "邮箱不能为空",
 					});
-				} else if (!this.user_password) {
+				} else if (this.user_password != this.user_password1) {
 					this.$message({
-						type: "warning",
-						message: "密码不能为空",
+						message: "密码必须一致",
+						typ: "warning",
 					});
 				} else {
-					Login({
+					Register({
 						email: this.user_email,
 						password: this.user_password,
 					})
 						.then((res) => {
-							if (res.data.status === 200) {
+							console.log(res);
+							if (res.data.status === 201) {
 								this.$message({
 									type: "success",
-									message: "登录成功！",
+									message: "注册成功！",
 								});
-								// 更新vuex里的全局变量
-								this.$store.commit("login", {
-									ID: res.data.user.id,
-									name: res.data.user.nickName,
-									isLogin: true,
-								});
-								this.$router.push("/index");
+								this.$router.push("/login");
 							} else {
 								this.$message.error(res.data.message);
 								return;
 							}
 						})
-						.catch((err) => {
-							this.$message.error(err);
-						});
+						.catch((err) => console.log("1"));
 				}
+			},
+		},
+		computed: {
+			includeChinese1() {
+				return /[\u4e00-\u9fa5]+/.test(this.user_password);
+			},
+			validateEmail() {
+				let reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+				return !reg.test(this.user_email) ? true : false;
 			},
 		},
 	};
@@ -93,6 +109,10 @@
 		box-sizing: border-box;
 		margin: 0;
 		padding: 0;
+	}
+	.validate {
+		color: #2a9d8f;
+		font-size: 12px;
 	}
 
 	.container-wrapper {
@@ -216,7 +236,7 @@
 				.textbox {
 					position: relative;
 					margin: 10px 0 20px 0;
-					height: 120px;
+					height: 60px;
 					display: flex;
 					align-items: center;
 					input {
@@ -269,17 +289,6 @@
 			opacity: 0.8;
 		}
 	}
-
-	.app.back .header {
-		grid-template-columns: 200px 1fr;
-	}
-	.app.back .main .user_field ._details .textbox {
-		height: 60px;
-	}
-	.app.back .main .user_field ._details .textbox input:focus + .input_detail {
-		top: 0%;
-	}
-
 	a {
 		margin: 0 20px;
 		color: #fff;

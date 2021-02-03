@@ -6,18 +6,74 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "5766814",
-      "name": "箭头-左-粗线条-fill",
-      "font_class": "jiantou-zuo-cuxiantiao-fill",
-      "unicode": "e6b1",
-      "unicode_decimal": 59057
+      "icon_id": "11820605",
+      "name": "钟表",
+      "font_class": "zhongbiao",
+      "unicode": "e629",
+      "unicode_decimal": 58921
     },
     {
-      "icon_id": "19461343",
-      "name": "箭头-左-粗线条-fill",
-      "font_class": "jiantou-zuo-cuxiantiao-fill-copy",
-      "unicode": "e873",
-      "unicode_decimal": 59507
+      "icon_id": "891864",
+      "name": "价格",
+      "font_class": "jiage",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "1350934",
+      "name": "新",
+      "font_class": "xinkaobei",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "15487767",
+      "name": "三角形/右",
+      "font_class": "you",
+      "unicode": "e71b",
+      "unicode_decimal": 59163
+    },
+    {
+      "icon_id": "801216",
+      "name": "我的商品",
+      "font_class": "shangpin",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "1138108",
+      "name": "我的资料",
+      "font_class": "wodeziliao",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "7834292",
+      "name": "我的商品",
+      "font_class": "wodeshangpin",
+      "unicode": "e6c4",
+      "unicode_decimal": 59076
+    },
+    {
+      "icon_id": "8596678",
+      "name": "发布求购 (2)",
+      "font_class": "fabuqiugou",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "9215385",
+      "name": "默认头像",
+      "font_class": "morentouxiang",
+      "unicode": "e6f7",
+      "unicode_decimal": 59127
+    },
+    {
+      "icon_id": "4112887",
+      "name": "默认头像",
+      "font_class": "tubiaoku-",
+      "unicode": "e671",
+      "unicode_decimal": 58993
     },
     {
       "icon_id": "14343651",
@@ -25,13 +81,6 @@
       "font_class": "github",
       "unicode": "e600",
       "unicode_decimal": 58880
-    },
-    {
-      "icon_id": "19378164",
-      "name": "github",
-      "font_class": "github-copy",
-      "unicode": "e601",
-      "unicode_decimal": 58881
     }
   ]
 }

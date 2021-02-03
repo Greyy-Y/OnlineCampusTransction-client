@@ -23,6 +23,12 @@ const routes = [
 		name: "Goods",
 		component: () => import("../views/Goods/index.vue"),
 	},
+	//商品详情
+	{
+		path: "/goods_detail/:gid",
+		name: "Goods_detail",
+		component: () => import("../views/Goods/goods_detail.vue"),
+	},
 	//求购
 	{
 		path: "/tobuy",
@@ -34,6 +40,12 @@ const routes = [
 		path: "/login",
 		name: "Login",
 		component: () => import("../views/Login/index.vue"),
+	},
+	//注册
+	{
+		path: "/register",
+		name: "Register",
+		component: () => import("../views/Register/index.vue"),
 	},
 ];
 

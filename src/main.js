@@ -6,7 +6,9 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "./styles/element-variable.scss";
 import "./assets/iconfont/iconfont.css";
+import dayjs from "dayjs";
 
+Vue.prototype.dayjs = dayjs;
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 new Vue({
