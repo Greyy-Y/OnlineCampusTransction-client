@@ -1,5 +1,5 @@
 <template>
-	<div class="product-card">
+	<div class="product-card" @click="toDetail(gid)">
 		<el-card :body-style="bodyStyle" class="card">
 			<img :src="imgSrc" class="image" />
 			<div style="padding: 14px;">
@@ -16,15 +16,25 @@
 </template>
 
 <script>
+	import { AddViewed } from "@/api/goods";
 	export default {
 		name: "ProductCard",
-		props: ["imgSrc", "productName", "productPrice", "updatedAt"],
+		props: ["imgSrc", "productName", "productPrice", "updatedAt", "gid"],
 		data() {
 			return {
 				bodyStyle: { padding: "8px", cursor: "pointer" },
 			};
 		},
-		methods: {},
+		methods: {
+			toDetail(gid) {
+				this.addViewed(gid);
+				this.$router.push({ name: "Goods_detail", params: { gid } });
+			},
+			async addViewed(gid) {
+				const res = await AddViewed(gid);
+				console.log(res);
+			},
+		},
 	};
 </script>
 

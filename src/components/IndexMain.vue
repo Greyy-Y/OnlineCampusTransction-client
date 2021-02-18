@@ -2,8 +2,8 @@
 	<div class="container">
 		<div class="swiper" v-loading="loading" element-loading-text="加载中...">
 			<el-carousel :interval="3000" height="400px">
-				<el-carousel-item v-for="(item, index) in recommendItem" :key="index" @click="toDetail(recommendItem[index])">
-					<div class="recommend">
+				<el-carousel-item v-for="(item, index) in recommendItem" :key="index">
+					<div class="recommend" @click="toDetail(item)">
 						<div class="recommend-item">
 							<div class="recommend-item-title">
 								<h1>{{ item.good.name }}</h1>
@@ -29,11 +29,11 @@
 				<featuredProductCard
 					v-for="(item, index) in featuredItem"
 					:key="index"
+					:gid="item.good._id"
 					:imgSrc="item.good.pic"
 					:productName="item.good.name"
 					:productPrice="item.good.price"
 					:updatedAt="item.good.updatedAt"
-					@click="toDetail(featuredItem[index])"
 				></featuredProductCard>
 			</div>
 		</div>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-	import { GetRecommend, GetFeatured } from "@/api/goods";
+	import { GetRecommend, GetFeatured, AddViewed } from "@/api/goods";
 	import featuredProductCard from "@/components/featuredProductCard";
 	export default {
 		name: "IndexMain",
@@ -70,6 +70,7 @@
 					item.good.pic.forEach((value) => {
 						item.good.pic = "http://localhost:3000/" + value;
 					});
+					item.good.updatedAt = this.dayjs(item.good.updatedAt).format("YYYY-MM-DD");
 				});
 				this.loading = false;
 			},
@@ -87,8 +88,12 @@
 				});
 			},
 			toDetail(item) {
-				console.log(item);
-				this.$router.push({ name: "Goods_detail", params: { gid: item._id } });
+				this.addViewed(item.good._id);
+				this.$router.push({ name: "Goods_detail", params: { gid: item.good._id } });
+			},
+			async addViewed(gid) {
+				const res = await AddViewed(gid);
+				console.log(res);
 			},
 		},
 		mounted() {
@@ -115,6 +120,7 @@
 			display: flex;
 			border-radius: 20px;
 			background-color: rgb(247, 247, 247);
+			cursor: pointer;
 			.recommend-item {
 				flex: 1;
 				min-width: 400px;

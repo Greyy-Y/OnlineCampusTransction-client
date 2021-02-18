@@ -17,42 +17,50 @@
 					>
 						<el-menu-item index="/index">首页</el-menu-item>
 						<el-menu-item index="/goods">二手</el-menu-item>
-						<el-menu-item index="/tobuy">求购</el-menu-item>
+						<el-menu-item index="/wanteds">求购</el-menu-item>
 					</el-menu>
 				</div>
 			</div>
 			<div class="nav-sub-wrapper">
 				<div class="nav-sub">
+					<div class="serchbar"><searchbar /></div>
 					<div class="publish">
-						<el-dropdown>
+						<el-dropdown @command="handleCommand">
 							<span class="el-dropdown-link"> 发布<i class="el-icon-arrow-down el-icon--right"></i> </span>
 							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item>发布</el-dropdown-item>
-								<el-dropdown-item>求购</el-dropdown-item>
+								<el-dropdown-item command="/releaseGoods">发布</el-dropdown-item>
+								<el-dropdown-item command="/releaseWanted">求购</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
 					</div>
 					<div class="avatar">
-						<el-avatar icon="el-icon-user-solid"></el-avatar>
+						<el-avatar icon="el-icon-user-solid" size="medium"></el-avatar>
 						<span class="username" @click="handlePersonal">{{ this.$store.state.userName }}</span>
 					</div>
+
 					<div class="login" v-if="this.$store.state.isLogin === false">
 						<el-link type="primary" :underline="false" @click="jumpToLogin">登录</el-link>
 						|
 						<el-link type="primary" :underline="false" @click="jumpToRegister">注册</el-link>
 					</div>
 					<div class="logout" v-else>
-						<el-link type="primary" :underline="false" @click="logOut">退出</el-link>
+						<div class="cart">
+							<el-badge :value="1" type="success" class="item"> <i class="iconfont icon-gouwuche"></i></el-badge>
+						</div>
+						<div class="loute-texte"><el-link type="primary" :underline="false" @click="logOut">退出</el-link></div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</nav>
 </template>
-
 <script>
+	import Searchbar from "./searchbar.vue";
 	export default {
 		name: "Navbar",
+		components: {
+			Searchbar,
+		},
 		data() {
 			return {};
 		},
@@ -61,20 +69,36 @@
 				this.activeIndex = key;
 			},
 			jumpToLogin() {
-				this.$router.push("Login");
+				this.$router.push("/login");
 			},
 			jumpToRegister() {
-				this.$router.push("Register");
+				this.$router.push("/register");
 			},
+			handleCommand(command) {
+				if (!this.$store.state.isLogin) {
+					this.$message({
+						type: "warning",
+						message: "请先登录，再进行操作",
+					});
+					return;
+				}
+				this.$router.push(command);
+			},
+
 			logOut() {
 				// 清除session
 				sessionStorage.clear();
 				// 更新vuex里的全局变量
 				this.$store.commit("logout");
+				this.$message({
+					type: "success",
+					message: "成功退出",
+				});
+				this.$router.push("Index");
 			},
 
 			handlePersonal() {
-				console.log("个人中心");
+				this.$router.push("UserInfo");
 			},
 		},
 	};
@@ -114,18 +138,21 @@
 				display: flex;
 				align-items: center;
 				justify-content: flex-end;
+
 				.nav-sub {
-					width: 350px;
 					display: flex;
 					justify-content: space-evenly;
 					align-items: center;
+					.publish {
+						margin: 0 10px;
+					}
 					.avatar {
 						font-size: 16px;
 						font-weight: 600;
 						display: flex;
 						align-items: center;
 						.username {
-							padding: 0 8px;
+							margin: 0 10px;
 							cursor: pointer;
 							opacity: 0.7;
 						}
@@ -133,8 +160,24 @@
 							opacity: 1;
 						}
 					}
-					// .login {
-					// }
+					.serchbar {
+						.search-container {
+							transform: translateX(60px);
+						}
+					}
+				}
+				.logout {
+					display: flex;
+					margin-right: 20px;
+					.cart {
+						margin-right: 20px;
+						i {
+							font-size: 1.2rem;
+						}
+					}
+				}
+				.login {
+					margin-right: 20px;
 				}
 			}
 		}

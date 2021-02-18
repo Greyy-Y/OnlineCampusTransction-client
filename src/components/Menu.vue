@@ -71,13 +71,13 @@
 				cate: [],
 				banner: [
 					{
-						pic: "http://localhost:3000/upload/workhard.jpg",
+						pic: "http://localhost:3000/uploads/workhard.jpg",
 					},
 					{
-						pic: "http://localhost:3000/upload/green.jpg",
+						pic: "http://localhost:3000/uploads/green.jpg",
 					},
 					{
-						pic: "http://localhost:3000/upload/996.jpeg",
+						pic: "http://localhost:3000/uploads/996.jpeg",
 					},
 				],
 				// 搜索标签

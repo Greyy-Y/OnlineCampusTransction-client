@@ -31,9 +31,9 @@ const routes = [
 	},
 	//求购
 	{
-		path: "/tobuy",
-		name: "ToBuy",
-		component: () => import("../views/ToBuy/index.vue"),
+		path: "/wanteds",
+		name: "Wanteds",
+		component: () => import("../views/Wanteds/index.vue"),
 	},
 	//登录
 	{
@@ -46,6 +46,41 @@ const routes = [
 		path: "/register",
 		name: "Register",
 		component: () => import("../views/Register/index.vue"),
+	},
+	//发布商品
+	{
+		path: "/releaseGoods",
+		name: "ReleaseGoods",
+		component: () => import("../views/ReleaseGoods/index.vue"),
+	},
+	//发布求购
+	{
+		path: "/releaseWanted",
+		name: "ReleaseWanted",
+		component: () => import("../views/ReleaseWanted/index.vue"),
+	},
+	//个人中心
+	{
+		path: "/personalCenter",
+		name: "PersonalCenter",
+		component: () => import("../views/PersonalCenter/index.vue"),
+		children: [
+			{
+				path: "/userInfo",
+				name: "UserInfo",
+				component: () => import("../views/PersonalCenter/Components/Info.vue"),
+			},
+			{
+				path: "/myGoods",
+				name: "MyGoods",
+				component: () => import("../views/PersonalCenter/Components/MyGoods.vue"),
+			},
+			{
+				path: "/myWanteds",
+				name: "MyWanteds",
+				component: () => import("../views/PersonalCenter/Components/MyWanteds.vue"),
+			},
+		],
 	},
 ];
 

@@ -59,7 +59,6 @@
 				this.$router.push("/login");
 			},
 			handleRegister() {
-				console.log("about to register");
 				if (this.user_email.length === 0 || this.user_password.length === 0) {
 					this.$message({
 						message: "用户名和密码不能为空！",
@@ -74,21 +73,18 @@
 					Register({
 						email: this.user_email,
 						password: this.user_password,
-					})
-						.then((res) => {
-							console.log(res);
-							if (res.data.status === 201) {
-								this.$message({
-									type: "success",
-									message: "注册成功！",
-								});
-								this.$router.push("/login");
-							} else {
-								this.$message.error(res.data.message);
-								return;
-							}
-						})
-						.catch((err) => console.log("1"));
+					}).then((res) => {
+						if (res.data.status === 201) {
+							this.$message({
+								type: "success",
+								message: "注册成功！",
+							});
+							this.$router.push("/login");
+						} else {
+							this.$message.error(res.data.message);
+							return;
+						}
+					});
 				}
 			},
 		},

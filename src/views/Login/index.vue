@@ -121,8 +121,8 @@
 	}
 
 	.app {
-		width: 550px;
-		height: 500px;
+		width: 500px;
+		height: 400px;
 		background: #34495e;
 		color: #fff;
 		font-family: montserrat;
@@ -142,7 +142,7 @@
 	}
 
 	.btn {
-		height: 50px;
+		height: 40px;
 		outline: none;
 		border: none;
 		cursor: pointer;
@@ -163,7 +163,7 @@
 		.info {
 			height: 100%;
 			font-weight: 800;
-			font-size: 2em;
+			font-size: 1.6em;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -179,7 +179,7 @@
 			color: rgba(255, 255, 255, 0.8);
 			margin-right: 20px;
 			.btn {
-				padding: 0 20px;
+				padding: 0 10px;
 				margin-left: 20px;
 				color: #fff;
 				font-size: 1.1rem;
@@ -216,12 +216,12 @@
 				.textbox {
 					position: relative;
 					margin: 10px 0 20px 0;
-					height: 120px;
+					height: 80px;
 					display: flex;
 					align-items: center;
 					input {
 						position: relative;
-						height: 40px;
+						height: 30px;
 						width: 80%;
 						border: none;
 						background: none;
@@ -260,10 +260,10 @@
 			position: relative;
 			color: #fff;
 			align-self: flex-end;
-			margin: 20px 20px 0 0;
+			margin: 10px 20px 0 0;
 			padding: 10px 0;
-			width: 160px;
-			font-size: 1.5rem;
+			width: 140px;
+			font-size: 1.2rem;
 		}
 		.btn.login:hover {
 			opacity: 0.8;

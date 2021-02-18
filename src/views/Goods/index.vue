@@ -5,6 +5,7 @@
 		<div class="goods">
 			<ProductCard />
 		</div>
+		<el-backtop target=".app"></el-backtop>
 		<Footer />
 	</div>
 </template>

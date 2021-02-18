@@ -24,7 +24,7 @@
 </template>
 
 <script>
-	import { GetGoods } from "@/api/goods";
+	import { GetGoods, AddViewed } from "@/api/goods";
 	export default {
 		data() {
 			return {
@@ -47,7 +47,12 @@
 					item.updatedAt = this.dayjs(item.updatedAt).format("YYYY-MM-DD");
 				});
 			},
+			async addViewed(gid) {
+				const res = await AddViewed(gid);
+				console.log(res);
+			},
 			toDetail(item) {
+				this.addViewed(item._id);
 				this.$router.push({ name: "Goods_detail", params: { gid: item._id } });
 			},
 		},

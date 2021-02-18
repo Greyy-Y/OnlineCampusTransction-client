@@ -1,5 +1,6 @@
 <template>
 	<div class="release">
+		<Navbar />
 		<div class="form-wrapper">
 			<div class="form">
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" label-width="60px">
@@ -18,13 +19,13 @@
 						></el-input>
 					</el-form-item>
 					<el-form-item label="标价" prop="price">
-						<el-input v-model="ruleForm.price" placeholder="想卖的价格"></el-input>
+						<el-input v-model.number="ruleForm.price" placeholder="想卖的价格"></el-input>
 					</el-form-item>
 					<el-form-item label="原价" prop="originPrice">
-						<el-input v-model="ruleForm.originPrice" placeholder="商品原价，如果忘记可填大概价格"></el-input>
+						<el-input v-model.number="ruleForm.originPrice" placeholder="商品原价，如果忘记可填大概价格"></el-input>
 					</el-form-item>
 					<el-form-item label="成色" prop="new">
-						<el-input v-model="ruleForm.new" placeholder="数字，商品新旧程度（如 8 表示8成新）"></el-input>
+						<el-input v-model.number="ruleForm.new" placeholder="数字，商品新旧程度（如 8 表示8成新）"></el-input>
 					</el-form-item>
 					<el-form-item label="分类" prop="category" class="cate">
 						<!-- options 获取后端目录数据 -->
@@ -38,16 +39,25 @@
 						</div>
 					</el-form-item>
 					<el-form-item label="数量" prop="count">
-						<el-input v-model="ruleForm.count" placeholder="商品数量"></el-input>
+						<el-input v-model.number="ruleForm.count" placeholder="商品数量"></el-input>
 					</el-form-item>
 					<el-form-item style="display:flex">
-						<div>图片上传，推荐750*750px</div>
+						<div>请选择 1 张图片上传，推荐750*750px</div>
 					</el-form-item>
 					<el-form-item style="display:flex" v-model="ruleForm.pic" prop="pic" label="图片">
-						<el-upload class="avatar-uploader" :action="uploadURL" :show-file-list="false">
-							<img v-if="imageUrl" :src="imageUrl" class="avatar" />
-							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+						<el-upload
+							:action="uploadURL"
+							list-type="picture-card"
+							:on-preview="handlePictureCardPreview"
+							:on-remove="handleRemove"
+							:on-success="handleSuccess"
+							:limit="limit"
+						>
+							<i class="el-icon-plus"></i>
 						</el-upload>
+						<el-dialog :visible.sync="dialogVisible">
+							<img width="100%" :src="dialogImageUrl" alt="" />
+						</el-dialog>
 					</el-form-item>
 
 					<el-form-item style="margin-left:-60px" class="btn">
@@ -57,11 +67,20 @@
 				</el-form>
 			</div>
 		</div>
+		<Footer />
 	</div>
 </template>
 <script>
+	import { GetCate } from "@/api/categories";
+	import { ReleaseGoods } from "@/api/goods";
+
+	import Navbar from "@/components/Navbar";
+	import Footer from "../../components/Footer.vue";
 	export default {
-		name: "Test1",
+		components: {
+			Navbar,
+			Footer,
+		},
 
 		data() {
 			return {
@@ -69,40 +88,100 @@
 					name: "",
 					desc: "",
 					new: "",
+					price: "",
+					originPrice: "",
+					//传objid
 					category: "",
 					count: "",
 					pic: [],
 				},
 				rules: {
 					name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
-					desc: [{ required: true, message: "请输入商品描述", trigger: "blur" }],
-					price: [{ required: true, message: "请输入商品价格", trigger: "blur" }],
-					new: [{ required: true, message: "请输入商品成色", trigger: "blur" }],
-					count: [{ required: true, message: "请输入商品数量（至少为1）", trigger: "blur" }],
+					desc: [{ message: "请输入商品描述", trigger: "blur" }],
+					price: [
+						{ required: true, message: "请输入商品价格", trigger: "blur" },
+						{ type: "number", message: "价格必须为大于0的数字", min: 0 },
+					],
+					originPrice: [{ type: "number", message: "价格必须为大于0的数字", min: 0 }],
+					new: [
+						{ required: true, message: "请输入商品成色", trigger: "blur" },
+						{ type: "number", message: "新旧程度应为1-10之间", min: 1, max: 10 },
+					],
+					count: [{ type: "number", required: true, message: "请输入商品数量（至少为1）", trigger: "blur" }],
 					category: [{ required: true, message: "请选择商品类别", trigger: "blur" }],
-					pic: [{ required: true, message: "请至少上传一张图片", trigger: "blur" }],
+					pic: [{ required: true, message: "请上传1张图片" }],
 				},
-
+				validate: false,
 				//cate
 				options: [],
 				props: { expandTrigger: "hover" },
 				//uoload
+				dialogImageUrl: "",
+				dialogVisible: false,
+				disabled: false,
 				uploadURL: "http://localhost:3000/upload",
+				limit: 1,
 			};
 		},
 		methods: {
-			submitForm(formName) {
+			async submitForm(formName) {
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						alert("submit!");
+						this.validate = true;
 					} else {
-						console.log("error submit!!");
+						this.$message({
+							type: "warning",
+							message: "请检查表格有无错漏！",
+						});
 						return false;
 					}
 				});
+				console.log(this.ruleForm);
+				if (this.validate) {
+					let data = {
+						name: this.ruleForm.name,
+						desc: this.ruleForm.desc,
+						new: this.ruleForm.new,
+						category: this.ruleForm.category[1],
+						count: this.ruleForm.count,
+						price: this.ruleForm.price,
+						originPrice: this.ruleForm.originPrice,
+						pic: this.ruleForm.pic[0],
+						uid: this.$store.state.userID,
+					};
+					const res = await ReleaseGoods(data);
+					if (res.status === 200) {
+						this.$message({
+							type: "success",
+							message: "发布成功！",
+						});
+						this.$router.push("Goods");
+					} else {
+						this.$message({
+							type: "warning",
+							message: "发布失败！",
+						});
+					}
+				}
 			},
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
+			},
+			//upload
+			handleRemove(file) {
+				console.log(file);
+			},
+			handlePictureCardPreview(file) {
+				this.dialogImageUrl = file.url;
+				this.dialogVisible = true;
+			},
+			handleDownload(file) {
+				console.log(file);
+			},
+			handleSuccess(file) {
+				console.log(file);
+				this.ruleForm.pic.push(file.imgsPath[0].url);
+				console.log(this.ruleForm.pic[0]);
 			},
 			async getCate() {
 				const res = await GetCate();
@@ -112,7 +191,7 @@
 				this.options.map((item) => {
 					item.children.map((v) => {
 						let newObj = {};
-						newObj.value = v.subName;
+						newObj.value = v._id;
 						newObj.label = v.subName;
 						item.children.shift();
 						item.children.push(newObj);
@@ -156,39 +235,6 @@
 				}
 				.btn {
 					margin-top: 40px;
-				}
-				.avatar-uploader {
-					border: 1px dashed #d9d9d9;
-					border-radius: 6px;
-					cursor: pointer;
-					position: relative;
-					overflow: hidden;
-				}
-				.el-upload {
-					border: 1px dashed #d9d9d9;
-					border-radius: 6px;
-					cursor: pointer;
-					position: relative;
-					overflow: hidden;
-				}
-				.avatar-uploader {
-					border-color: #c2c2c2;
-				}
-				.el-upload:hover {
-					border-color: #409eff;
-				}
-				.avatar-uploader-icon {
-					font-size: 28px;
-					color: #8c939d;
-					width: 178px;
-					height: 178px;
-					line-height: 178px;
-					text-align: center;
-				}
-				.avatar {
-					width: 178px;
-					height: 178px;
-					display: block;
 				}
 			}
 		}
