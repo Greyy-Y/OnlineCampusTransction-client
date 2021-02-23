@@ -13,6 +13,7 @@ export default new Vuex.Store({
 		realName: sessionStorage.getItem("realName"),
 		sex: sessionStorage.getItem("sex"),
 		myCart: JSON.parse(sessionStorage.getItem("myCart")),
+		checkedCartList: [],
 	},
 	getters: {
 		getUserName(state) {
@@ -20,6 +21,16 @@ export default new Vuex.Store({
 		},
 		getAvatar(state) {
 			return "http://localhost:3000/" + state.avatar;
+		},
+		getCartLen(state) {
+			return state.myCart.length;
+		},
+		totalPrice(state) {
+			let total = 0;
+			state.myCart.forEach((item) => {
+				total += item.count * item.good.price;
+			});
+			return total;
 		},
 	},
 
@@ -45,6 +56,7 @@ export default new Vuex.Store({
 				(state.isLogin = false),
 				(state.avatar = null),
 				(state.realName = null);
+			state.myCart = [];
 		},
 		update(state, payload) {
 			let { nickName, realName, avatar } = payload;
@@ -59,6 +71,9 @@ export default new Vuex.Store({
 			let { cart } = payload;
 			state.myCart = cart;
 			sessionStorage.setItem("myCart", JSON.stringify(state.myCart));
+		},
+		emptyMyCart(state) {
+			state.myCart = [];
 		},
 	},
 	actions: {},

@@ -86,3 +86,25 @@ export function RemoveGoodFromCart(data) {
 		},
 	});
 }
+// 修改我的购物车
+export function UpdateMyCart(data) {
+	return service.request({
+		method: "post",
+		url: "/users/updateMyCart",
+		data: {
+			goodId: data.goodId,
+			uid: data.uid,
+			count: data.count,
+		},
+	});
+}
+// 清空我的购物车
+export function EmptyMyCart(data) {
+	return service.request({
+		method: "post",
+		url: "/users/emptyMyCart",
+		data: {
+			uid: data.uid,
+		},
+	});
+}

@@ -50,17 +50,6 @@
 			};
 		},
 		methods: {
-			// async getGoods() {
-			// 	const res = await GetGoods();
-			// 	this.goods = res.data.data;
-			// 	// 更新商品图片路径 ，日期格式
-			// 	this.goods.map((item) => {
-			// 		item.pic.forEach((element) => {
-			// 			item.pic = "http://localhost:3000/" + element;
-			// 		});
-			// 		item.createdAt = this.dayjs(item.createdAt).format("YYYY-MM-DD");
-			// 	});
-			// },
 			async addViewed(gid) {
 				const res = await AddViewed(gid);
 				console.log(res);

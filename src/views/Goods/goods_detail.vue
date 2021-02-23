@@ -275,10 +275,6 @@
 					.good_count {
 						margin: 10px 0;
 						display: flex;
-						// i {
-						// 	font-size: 1.3rem;
-						// }
-
 						.count {
 							color: #2a9d8f;
 							font-weight: 600;
