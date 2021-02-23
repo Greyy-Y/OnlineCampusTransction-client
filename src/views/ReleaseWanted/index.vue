@@ -55,6 +55,7 @@
 </template>
 <script>
 	import { ReleaseWanteds } from "@/api/wanteds";
+	import { AddWanted } from "@/api/user";
 	import Navbar from "@/components/Navbar";
 	import Footer from "../../components/Footer.vue";
 	export default {
@@ -113,13 +114,18 @@
 						uid: this.$store.state.userID,
 					};
 					const res = await ReleaseWanteds(data);
-					console.log(res);
 					if (res.status === 200) {
 						this.$message({
 							type: "success",
 							message: "发布成功！",
 						});
 						this.$router.push("Wanteds");
+						let resdata = {
+							uid: this.$store.state.userID,
+							wantedId: res.data.wanteds._id,
+						};
+						AddWanted(resdata).then((res) => {
+						});
 					} else {
 						this.$message({
 							type: "warning",
@@ -128,6 +134,7 @@
 					}
 				}
 			},
+
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
 			},

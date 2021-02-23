@@ -5,7 +5,7 @@
 			<div class="wanted-item" v-for="(item, index) in wanteds" :key="index">
 				<div class="info">
 					<div class="avatar">
-						<el-avatar icon="el-icon-user-solid"></el-avatar>
+						<el-avatar icon="el-icon-user-solid" :src="item.uid.avatar"></el-avatar>
 					</div>
 					<div class="user">
 						<div class="name">{{ item.uid.nickName }}</div>
@@ -53,8 +53,8 @@
 					if (v.pic[0] !== undefined) {
 						v.pic[0] = "http://localhost:3000/" + v.pic[0];
 					}
+					v.uid.avatar = "http://localhost:3000" + v.uid.avatar;
 				});
-				console.log(this.wanteds);
 			},
 		},
 		mounted: function() {

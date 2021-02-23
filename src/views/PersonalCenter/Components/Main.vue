@@ -1,5 +1,5 @@
 <template>
-	<div class="info">
+	<div class="info1">
 		<router-view />
 	</div>
 </template>
@@ -11,9 +11,10 @@
 </script>
 
 <style lang="scss" scoped>
-	.info {
-		width: 800px;
+	.info1 {
+		width: 850px;
 		background: white;
-		height: 600px;
+		height: 700px;
+		overflow: scroll;
 	}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div id="nav-container">
 		<div class="nav">
-			<h5>个人中心</h5>
+			<h4>个人中心</h4>
 			<el-menu
 				default-active="/userInfo"
 				:router="true"
@@ -16,11 +16,15 @@
 				</el-menu-item>
 				<el-menu-item index="/myGoods">
 					<i class="iconfont icon-shangpin"></i>
-					<span slot="title">我的商品</span>
+					<span slot="title">我的发布</span>
 				</el-menu-item>
 				<el-menu-item index="/myWanteds">
 					<i class="iconfont icon-fabuqiugou"></i>
 					<span slot="title">我的求购</span>
+				</el-menu-item>
+				<el-menu-item index="/myCart">
+					<i class="iconfont icon-gouwuche1" id="gouwuche"></i>
+					<span slot="title">我的购物车</span>
 				</el-menu-item>
 			</el-menu>
 		</div>
@@ -42,15 +46,15 @@
 </script>
 <style lang="scss" scoped>
 	#nav-container {
-		width: 200px;
-		height: 600px;
+		width: 180px;
+		height: 700px;
 		background: white;
 		border-right: solid rgb(207, 207, 207) 1px;
 		.nav {
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-start;
-			h5 {
+			h4 {
 				text-align: left;
 				margin-left: 26px;
 			}
@@ -62,6 +66,9 @@
 			i {
 				font-size: 1.2rem;
 				margin-right: 10px;
+			}
+			#gouwuche {
+				margin: 0 8px 0 -1px;
 			}
 		}
 	}

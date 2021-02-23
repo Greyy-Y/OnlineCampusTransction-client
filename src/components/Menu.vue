@@ -42,9 +42,9 @@
 						v-for="(item, index) in order"
 						:key="index"
 						:class="isActiveOrder == index ? 'active' : ''"
-						@click="handlePick(index)"
+						@click="handlePick(index, item)"
 					>
-						<span>{{ item }} </span>
+						<span>{{ item.name }} </span>
 						<i
 							v-if="isActiveOrder == index ? true : false"
 							:class="orderStatus ? 'el-icon-top' : 'el-icon-bottom'"
@@ -83,7 +83,11 @@
 				// 搜索标签
 				tags: [],
 				// 商品排序
-				order: ["时间", "价格", "浏览量"],
+				order: [
+					{ name: "时间", value: "date" },
+					{ name: "价格", value: "price" },
+					{ name: "浏览量", value: "viewed" },
+				],
 				isActiveOrder: 0,
 				orderStatus: true,
 			};
@@ -106,14 +110,12 @@
 			removeActiveSub() {
 				this.inSubMenu = false;
 			},
-
 			// 获取组件所需数据
 			async getCate() {
 				const res = await GetCate();
 
 				this.cate = res.data;
 			},
-
 			findByCate(item) {
 				if (this.tags.includes(item.subName)) {
 					return;
@@ -125,8 +127,9 @@
 				this.tags.splice(this.tags.indexOf(tag), 1);
 			},
 			// 点击排序
-			handlePick(index) {
+			handlePick(index, item) {
 				this.isActiveOrder = index;
+				this.$emit("sort-type", item.value, this.orderStatus);
 			},
 			// 更改排序状态（升序，降序）
 			changeOrderStauts() {

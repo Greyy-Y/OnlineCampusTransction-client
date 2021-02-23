@@ -8,7 +8,7 @@
 						{{ item.name }}
 					</div>
 					<div class="good-info">
-						<time class="time">{{ "更新于 " + item.updatedAt }}</time>
+						<time class="time">{{ "创建于 " + item.createdAt }}</time>
 						<span>{{ item.viewed + " 浏览" }}</span>
 					</div>
 					<div class="good-desc">
@@ -23,12 +23,26 @@
 	</div>
 </template>
 
+//
 <script>
-	import { GetGoods, AddViewed } from "@/api/goods";
+	import { AddViewed } from "@/api/goods";
 	export default {
+		props: {
+			vgoods: {
+				type: Array,
+			},
+			sortCate: {
+				type: Object,
+				default: function() {
+					return { value: "date" };
+				},
+			},
+		},
+
 		data() {
 			return {
 				goods: [],
+				sortCate1: {},
 				bodyStyle: {
 					padding: "2px",
 					height: "auto",
@@ -36,17 +50,17 @@
 			};
 		},
 		methods: {
-			async getGoods() {
-				const res = await GetGoods();
-				this.goods = res.data.data;
-				// 更新商品图片路径 ，日期格式
-				this.goods.map((item) => {
-					item.pic.forEach((element) => {
-						item.pic = "http://localhost:3000/" + element;
-					});
-					item.updatedAt = this.dayjs(item.updatedAt).format("YYYY-MM-DD");
-				});
-			},
+			// async getGoods() {
+			// 	const res = await GetGoods();
+			// 	this.goods = res.data.data;
+			// 	// 更新商品图片路径 ，日期格式
+			// 	this.goods.map((item) => {
+			// 		item.pic.forEach((element) => {
+			// 			item.pic = "http://localhost:3000/" + element;
+			// 		});
+			// 		item.createdAt = this.dayjs(item.createdAt).format("YYYY-MM-DD");
+			// 	});
+			// },
 			async addViewed(gid) {
 				const res = await AddViewed(gid);
 				console.log(res);
@@ -55,10 +69,35 @@
 				this.addViewed(item._id);
 				this.$router.push({ name: "Goods_detail", params: { gid: item._id } });
 			},
+			compareSort(prop, desc = false) {
+				return function(obj1, obj2) {
+					var val1 = obj1[prop];
+					var val2 = obj2[prop];
+					if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+						val1 = Number(val1);
+						val2 = Number(val2);
+					}
+					if (desc == true) {
+						// 升序排列
+						return val1 - val2;
+					} else {
+						// 降序排列
+						return val2 - val1;
+					}
+				};
+			},
 		},
-
+		watch: {
+			vgoods(newData) {
+				this.goods = newData;
+			},
+			sortCate(newData) {
+				this.sortCate1 = newData;
+				this.goods = this.goods.sort(this.compareSort(this.sortCate.type, this.sortCate.asc));
+			},
+		},
 		mounted: function() {
-			this.getGoods();
+			// this.goods1 = this.vgoods;
 		},
 	};
 </script>
@@ -93,7 +132,7 @@
 				.good-info {
 					display: flex;
 					justify-content: space-around;
-					font-size: 0.6rem;
+					font-size: 0.4rem;
 					color: #93999f;
 					margin: 5px 0;
 					span {

@@ -33,6 +33,7 @@
 
 <script>
 	import { Login } from "@/api/login";
+	import { GetMyCart } from "@/api/user";
 	export default {
 		name: "login",
 		data() {
@@ -67,13 +68,26 @@
 									type: "success",
 									message: "登录成功！",
 								});
+								console.log(res);
 								// 更新vuex里的全局变量
 								this.$store.commit("login", {
 									ID: res.data.user.id,
 									name: res.data.user.nickName,
+									realName: res.data.user.realName,
 									isLogin: true,
+									avatar: res.data.user.avatar,
+									sex: res.data.user.sex,
 								});
 								this.$router.push("/index");
+								//获取购物车
+								GetMyCart({
+									uid: this.$store.state.userID,
+								}).then((res) => {
+									let data = res.data.data[0].cart;
+									this.$store.commit("setMyCart", {
+										cart: data,
+									});
+								});
 							} else {
 								this.$message.error(res.data.message);
 								return;

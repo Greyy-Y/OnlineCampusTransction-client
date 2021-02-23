@@ -34,7 +34,7 @@
 						</el-dropdown>
 					</div>
 					<div class="avatar">
-						<el-avatar icon="el-icon-user-solid" size="medium"></el-avatar>
+						<el-avatar size="medium" :src="this.$store.getters.getAvatar"></el-avatar>
 						<span class="username" @click="handlePersonal">{{ this.$store.state.userName }}</span>
 					</div>
 
@@ -44,8 +44,14 @@
 						<el-link type="primary" :underline="false" @click="jumpToRegister">注册</el-link>
 					</div>
 					<div class="logout" v-else>
-						<div class="cart">
-							<el-badge :value="1" type="success" class="item"> <i class="iconfont icon-gouwuche"></i></el-badge>
+						<div class="cart" @click="handleToMyCary">
+							<el-badge
+								:value="this.$store.state.myCart === null ? 0 : this.$store.state.myCart.length"
+								type="success"
+								class="item"
+							>
+								<i class="iconfont icon-gouwuche"></i
+							></el-badge>
 						</div>
 						<div class="loute-texte"><el-link type="primary" :underline="false" @click="logOut">退出</el-link></div>
 					</div>
@@ -96,9 +102,20 @@
 				});
 				this.$router.push("Index");
 			},
-
 			handlePersonal() {
-				this.$router.push("UserInfo");
+				if (this.$store.state.userID) {
+					this.$router.push("/userInfo");
+				} else {
+					this.$message({
+						type: "warning",
+						message: "请登录后再进行操作",
+					});
+					return;
+				}
+			},
+			handleToMyCary() {
+				console.log("tocart");
+				this.$router.push("/myCart");
 			},
 		},
 	};
@@ -143,6 +160,7 @@
 					display: flex;
 					justify-content: space-evenly;
 					align-items: center;
+					margin-right: 10px;
 					.publish {
 						margin: 0 10px;
 					}
@@ -178,6 +196,9 @@
 				}
 				.login {
 					margin-right: 20px;
+				}
+				.cart {
+					cursor: pointer;
 				}
 			}
 		}

@@ -9,7 +9,7 @@
 					</div>
 					<div class="good_info">
 						<div class="good_publisher">
-							<div class="avtar"><el-avatar icon="el-icon-user-solid"></el-avatar></div>
+							<div class="avatar"><el-avatar icon="el-icon-user-solid" :src="this.publisher.avatar"></el-avatar></div>
 							<div class="user_name">{{ this.publisher.nickName }}</div>
 						</div>
 						<div class="good_name">{{ this.good.name }}</div>
@@ -36,7 +36,9 @@
 							{{ this.good.createdAt }}
 						</div>
 						<div class="addcart">
-							<el-button type="success" class="addtocart"><i class="iconfont icon-gouwuche"></i>加入购物车</el-button>
+							<el-button type="success" class="addtocart" @click="addToCart"
+								><i class="iconfont icon-gouwuche"></i>加入购物车</el-button
+							>
 						</div>
 					</div>
 				</div>
@@ -50,7 +52,7 @@
 					<el-divider><i class="iconfont icon-pingjia"></i></el-divider>
 					<div class="comment-item" v-for="(item, index) in comment" :key="index">
 						<div class="avatar">
-							<el-avatar icon="el-icon-user-solid"></el-avatar>
+							<el-avatar icon="el-icon-user-solid" :src="item.user.avatar"></el-avatar>
 						</div>
 						<div class="user">
 							<div class="name">{{ item.user.nickName }}</div>
@@ -87,6 +89,7 @@
 
 <script>
 	import { GetGoodsByID, GetGoodComment, SubmitComment } from "@/api/goods";
+	import { AddToCart } from "@/api/user";
 	import Navbar from "@/components/Navbar";
 	import Footer from "../../components/Footer.vue";
 
@@ -115,19 +118,37 @@
 			getGid() {
 				this.gid = this.$route.params.gid;
 			},
+			async addToCart() {
+				let data = {
+					uid: this.$store.state.userID,
+					goodId: this.gid,
+				};
+				const res = await AddToCart(data);
+				console.log(res);
+				if (res.status === 200) {
+					this.$message({
+						type: "success",
+						message: "成功加入购物车！",
+					});
+					//更新vuex购物车
+					this.$store.commit("setMyCart", { cart: res.data.user.cart });
+					// this.router.push("/personalCenter");
+				}
+			},
 			async getGoodsByID() {
 				const data = await GetGoodsByID(this.gid);
 				this.good = data.data.good[0];
 				this.good.createdAt = this.dayjs(this.good.createdAt).format("YYYY-MM-DD");
 				this.good.pic = "http://localhost:3000/" + this.good.pic;
 				this.publisher = data.data.good[0].uid;
-				this.publisher.avtar = "http://localhost:3000/" + this.publisher.avtar;
+				this.publisher.avatar = "http://localhost:3000/" + this.publisher.avatar;
 			},
 			async getComment() {
 				const data = await GetGoodComment(this.gid);
 				this.comment = data.data.comment[0].comment;
 				this.comment.map((v) => {
 					v.createdAt = this.dayjs(v.createdAt).fromNow();
+					v.user.avatar = "http://localhost:3000/" + v.user.avatar;
 				});
 			},
 			//
@@ -210,7 +231,7 @@
 						display: flex;
 						align-items: center;
 						justify-content: flex-start;
-						.avtar {
+						.avatar {
 						}
 						.user_name {
 							margin: 0 10px;

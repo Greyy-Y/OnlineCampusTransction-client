@@ -80,6 +80,11 @@ const routes = [
 				name: "MyWanteds",
 				component: () => import("../views/PersonalCenter/Components/MyWanteds.vue"),
 			},
+			{
+				path: "/myCart",
+				name: "MyCart",
+				component: () => import("../views/PersonalCenter/Components/MyCart.vue"),
+			},
 		],
 	},
 ];

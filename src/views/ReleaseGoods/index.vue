@@ -73,9 +73,10 @@
 <script>
 	import { GetCate } from "@/api/categories";
 	import { ReleaseGoods } from "@/api/goods";
-
+	import { AddGood } from "@/api/user";
 	import Navbar from "@/components/Navbar";
 	import Footer from "../../components/Footer.vue";
+
 	export default {
 		components: {
 			Navbar,
@@ -114,7 +115,10 @@
 				validate: false,
 				//cate
 				options: [],
-				props: { expandTrigger: "hover" },
+				options1: [],
+				props: {
+					expandTrigger: "hover",
+				},
 				//uoload
 				dialogImageUrl: "",
 				dialogVisible: false,
@@ -136,7 +140,6 @@
 						return false;
 					}
 				});
-				console.log(this.ruleForm);
 				if (this.validate) {
 					let data = {
 						name: this.ruleForm.name,
@@ -156,6 +159,13 @@
 							message: "发布成功！",
 						});
 						this.$router.push("Goods");
+						let resdata = {
+							uid: this.$store.state.userID,
+							goodId: res.data.goods._id,
+						};
+						AddGood(resdata).then((res) => {
+							console.log(res);
+						});
 					} else {
 						this.$message({
 							type: "warning",
@@ -181,22 +191,16 @@
 			handleSuccess(file) {
 				console.log(file);
 				this.ruleForm.pic.push(file.imgsPath[0].url);
-				console.log(this.ruleForm.pic[0]);
 			},
 			async getCate() {
 				const res = await GetCate();
 				this.options = res.data.map((item) => {
+					item.subCate = item.subCate.map((o) => {
+						return { value: o._id, label: o.subName };
+					});
 					return { value: item.name, label: item.name, children: item.subCate };
 				});
-				this.options.map((item) => {
-					item.children.map((v) => {
-						let newObj = {};
-						newObj.value = v._id;
-						newObj.label = v.subName;
-						item.children.shift();
-						item.children.push(newObj);
-					});
-				});
+				console.log(this.options);
 			},
 		},
 		mounted: function() {
