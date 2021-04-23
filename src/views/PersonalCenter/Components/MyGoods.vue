@@ -1,9 +1,13 @@
 <template>
 	<div class="mygoods-wrapper">
-		<div class="mygoods-container" v-if="myGoods != null">
-			<div class="mygoods-box" v-for="(item, index) in myGoods" :key="index">
+		<div class="no-content" v-if="newMyGoods.length == 0">
+			<img src="../../../assets/img/nocontent.png" />
+			<span>没有更多了~</span><el-button @click="toRealease">去发布</el-button>
+		</div>
+		<div class="mygoods-container" v-else>
+			<div class="mygoods-box" v-for="(item, index) in newMyGoods" :key="index">
 				<div class="mygoods-box-img">
-					<img :src="item.pic" />
+					<img :src="baseUrl + item.pic" />
 				</div>
 				<div class="mygoods-box-content">
 					<div class="mygoods-title">
@@ -17,36 +21,36 @@
 							<div class="price" v-if="item.price">
 								标价￥:<span>{{ item.price }}</span>
 							</div>
+							<div class="price" v-if="item.new">
+								成色:<span>{{ item.new }}</span>
+							</div>
 							<div class="date">
 								{{ item.modifyTime }}
 							</div>
 						</div>
 						<div class="mygoods-button">
-							<el-button type="primary" size="mini">
-								<span v-if="item.state === 1">待审核</span>
-								<span v-else-if="item.state === 0">未通过</span>
-								<span v-if="item.state === 2">已通过</span>
-							</el-button>
-							<el-button type="warning" size="mini">编辑</el-button>
-							<el-button type="danger" size="mini">删除</el-button>
+							<div class="status">
+								<el-button v-if="item.state === 1" size="mini">待审核</el-button>
+								<el-button v-else-if="item.state === 0" type="primary" size="mini">未通过</el-button>
+								<el-button v-if="item.state === 2" type="success" size="mini">已通过</el-button>
+							</div>
+							<el-button type="warning" size="mini" @click="handleEdit(item._id)">编辑</el-button>
+							<el-button type="danger" size="mini" @click="handleDelete(item._id)">删除</el-button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<div class="no-content" v-else>
-			<el-button> 没有更多了</el-button>
-		</div>
 	</div>
 </template>
 
 <script>
-	import { GetMyGoods } from "@/api/user";
+	import { GetMyGoods, DeleteReleaseGood } from "@/api/user";
 	export default {
 		data() {
 			return {
 				myGoods: [],
+				baseUrl: "http://localhost:3000/",
 			};
 		},
 		methods: {
@@ -58,8 +62,44 @@
 				this.myGoods = res.data.data[0].myGoods;
 				this.myGoods.map((v) => {
 					v.modifyTime = this.dayjs(v.modifyTime).format("YYYY-MM-DD");
-					v.pic = `http://localhost:3000/${v.pic}`;
 				});
+				this.myGoods = this.myGoods.reverse();
+			},
+			handleDelete(gid) {
+				this.$confirm("确认删除该商品?", "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
+					type: "warning",
+				})
+					.then(() => {
+						let data = {
+							uid: this.$store.state.userID,
+							goodId: gid,
+						};
+						DeleteReleaseGood(data);
+						this.getMyGoods();
+						this.$message({
+							type: "success",
+							message: "成功删除",
+						});
+					})
+					.catch(() => {
+						this.$message({
+							type: "info",
+							message: "已取消删除",
+						});
+					});
+			},
+			handleEdit(gid) {
+				this.$router.push({ name: "EditGood", params: { gid: gid } });
+			},
+			toRealease() {
+				this.$router.push("/releaseGoods");
+			},
+		},
+		computed: {
+			newMyGoods() {
+				return this.myGoods;
 			},
 		},
 		mounted: function() {
@@ -135,7 +175,14 @@
 						}
 						.date {
 							color: #93999f;
+							font-size: 0.7rem;
 						}
+					}
+				}
+				.mygoods-button {
+					display: flex;
+					.status {
+						margin: 0 10px;
 					}
 				}
 			}
@@ -144,7 +191,14 @@
 			box-shadow: 1px 1px 8px #929292;
 		}
 		.no-content {
-			margin: 20px 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			span {
+				color: #93999f;
+				margin-bottom: 10px;
+			}
 		}
 	}
 </style>

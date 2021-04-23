@@ -37,11 +37,11 @@
 			align-items: center;
 		}
 		.personal-center {
+			width: 1200px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			margin: 20px 0;
-			width: 70%;
 		}
 	}
 </style>

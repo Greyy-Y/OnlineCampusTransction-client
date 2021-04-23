@@ -58,9 +58,16 @@ export function ReleaseGoods(data) {
 		data,
 	});
 }
+//修改我发布的商品
+export function EditMyGood(data) {
+	return service.request({
+		method: "post",
+		url: "/goods/editMyGood",
+		data,
+	});
+}
 
 // *获取推荐商品
-
 export function GetRecommend() {
 	return service.request({
 		method: "get",
@@ -73,5 +80,26 @@ export function GetFeatured() {
 	return service.request({
 		method: "get",
 		url: "/recommend/getFeatured",
+	});
+}
+
+// 获取特定目录商品列表
+export function FindByCate(data) {
+	return service.request({
+		method: "post",
+		url: "/goods/findByCate",
+		data: {
+			cateID: data.cateID,
+		},
+	});
+}
+//模糊搜索商品
+export function GetGoodsByName(value) {
+	return service.request({
+		method: "post",
+		url: "/goods/getGoodsByName",
+		data: {
+			value: value,
+		},
 	});
 }

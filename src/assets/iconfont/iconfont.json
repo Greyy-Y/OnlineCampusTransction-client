@@ -6,6 +6,90 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1276831",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "8648620",
+      "name": "支付宝支付",
+      "font_class": "zhifubaozhifu",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "14012948",
+      "name": "微信支付",
+      "font_class": "weixinzhifu",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "6233471",
+      "name": "WeChat_pay",
+      "font_class": "WeChat_pay",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "12038818",
+      "name": "Alipay payment",
+      "font_class": "Alipaypayment",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "14440932",
+      "name": "pay_ wechatpay",
+      "font_class": "pay_wechatpay",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "14885628",
+      "name": "勾",
+      "font_class": "gou",
+      "unicode": "e6b0",
+      "unicode_decimal": 59056
+    },
+    {
+      "icon_id": "16991347",
+      "name": "ali_pay",
+      "font_class": "ali_pay",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "16843737",
+      "name": "新增",
+      "font_class": "xinzeng",
+      "unicode": "e6ad",
+      "unicode_decimal": 59053
+    },
+    {
+      "icon_id": "14897862",
+      "name": "地址",
+      "font_class": "dizhi",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "17443653",
+      "name": "地址",
+      "font_class": "dizhi1",
+      "unicode": "e6eb",
+      "unicode_decimal": 59115
+    },
+    {
+      "icon_id": "16851618",
+      "name": "订单",
+      "font_class": "dingdan23",
+      "unicode": "e6e2",
+      "unicode_decimal": 59106
+    },
+    {
       "icon_id": "9895990",
       "name": "库存",
       "font_class": "kucunweb",

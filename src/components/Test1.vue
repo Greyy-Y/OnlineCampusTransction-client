@@ -1,194 +1,181 @@
 <template>
-	<div class="release">
-		<div class="form-wrapper">
-			<div class="form">
-				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" label-width="60px">
-					<div class="title">
-						发布商品
-					</div>
-					<el-form-item label="名称" prop="name">
-						<el-input v-model="ruleForm.name" placeholder="必要，商品名称"></el-input>
-					</el-form-item>
-					<el-form-item label="简介" prop="desc">
-						<el-input
-							v-model="ruleForm.desc"
-							placeholder="详细的介绍会吸引更多买家哦"
-							:rows="2"
-							type="textarea"
-						></el-input>
-					</el-form-item>
-					<el-form-item label="标价" prop="price">
-						<el-input v-model="ruleForm.price" placeholder="想卖的价格"></el-input>
-					</el-form-item>
-					<el-form-item label="原价" prop="originPrice">
-						<el-input v-model="ruleForm.originPrice" placeholder="商品原价，如果忘记可填大概价格"></el-input>
-					</el-form-item>
-					<el-form-item label="成色" prop="new">
-						<el-input v-model="ruleForm.new" placeholder="数字，商品新旧程度（如 8 表示8成新）"></el-input>
-					</el-form-item>
-					<el-form-item label="分类" prop="category" class="cate">
-						<!-- options 获取后端目录数据 -->
-						<div>
-							<el-cascader
-								v-model="ruleForm.category"
-								:options="options"
-								style="margin-left: -60px"
-								:props="props"
-							></el-cascader>
+	<div class="goods-wrapper">
+		<div class="no-content" v-if="this.goods.length == 0">
+			<img src="../assets/img/nocontent.png" />
+			<span>暂无相关商品~~</span>
+		</div>
+		<div class="goods-container">
+			<div class="goods" v-for="(item, index) in goods" :key="index" @click="toDetail(item)">
+				<el-card :body-style="bodyStyle" shadow="always">
+					<img :src="baseUrl + item.pic" class="image" />
+					<div class="good-intro">
+						<div class="good-name">
+							{{ item.name }}
 						</div>
-					</el-form-item>
-					<el-form-item label="数量" prop="count">
-						<el-input v-model="ruleForm.count" placeholder="商品数量"></el-input>
-					</el-form-item>
-					<el-form-item style="display:flex">
-						<div>图片上传，推荐750*750px</div>
-					</el-form-item>
-					<el-form-item style="display:flex" v-model="ruleForm.pic" prop="pic" label="图片">
-						<el-upload class="avatar-uploader" :action="uploadURL" :show-file-list="false">
-							<img v-if="imageUrl" :src="imageUrl" class="avatar" />
-							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
-						</el-upload>
-					</el-form-item>
-
-					<el-form-item style="margin-left:-60px" class="btn">
-						<el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-						<el-button @click="resetForm('ruleForm')">重置</el-button>
-					</el-form-item>
-				</el-form>
+						<div class="good-info">
+							<time class="time">{{ "创建于 " + item.createdAt }}</time>
+							<span>{{ item.viewed + " 浏览" }}</span>
+						</div>
+						<div class="good-desc">
+							{{ item.desc }}
+						</div>
+						<div class="good-price">
+							{{ `￥${item.price}元` }}
+						</div>
+					</div>
+				</el-card>
 			</div>
 		</div>
 	</div>
 </template>
+
+//
 <script>
+	import { AddViewed } from "@/api/goods";
 	export default {
-		name: "Test1",
+		props: {
+			vgoods: {
+				type: Array,
+			},
+			sortCate: {
+				type: Object,
+				default: function() {
+					return { value: "date" };
+				},
+			},
+		},
 
 		data() {
 			return {
-				ruleForm: {
-					name: "",
-					desc: "",
-					new: "",
-					category: "",
-					count: "",
-					pic: [],
+				goods: [],
+				bodyStyle: {
+					padding: "2px",
+					height: "auto",
 				},
-				rules: {
-					name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
-					desc: [{ required: true, message: "请输入商品描述", trigger: "blur" }],
-					price: [{ required: true, message: "请输入商品价格", trigger: "blur" }],
-					new: [{ required: true, message: "请输入商品成色", trigger: "blur" }],
-					count: [{ required: true, message: "请输入商品数量（至少为1）", trigger: "blur" }],
-					category: [{ required: true, message: "请选择商品类别", trigger: "blur" }],
-					pic: [{ required: true, message: "请至少上传一张图片", trigger: "blur" }],
-				},
-
-				//cate
-				options: [],
-				props: { expandTrigger: "hover" },
-				//uoload
-				uploadURL: "http://localhost:3000/upload",
+				baseUrl: "http://localhost:3000/",
 			};
 		},
 		methods: {
-			submitForm(formName) {
-				this.$refs[formName].validate((valid) => {
-					if (valid) {
-						alert("submit!");
-					} else {
-						console.log("error submit!!");
-						return false;
+			async addViewed(gid) {
+				const res = await AddViewed(gid);
+				console.log(res);
+			},
+			toDetail(item) {
+				this.addViewed(item._id);
+				this.$router.push({ name: "Goods_detail", params: { gid: item._id } });
+			},
+			// 排序
+			compareSort(prop, desc = false) {
+				return function(obj1, obj2) {
+					var val1 = obj1[prop];
+					var val2 = obj2[prop];
+					if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+						val1 = Number(val1);
+						val2 = Number(val2);
 					}
-				});
+					if (desc == true) {
+						// 升序排列
+						return val1 - val2;
+					} else {
+						// 降序排列
+						return val2 - val1;
+					}
+				};
 			},
-			resetForm(formName) {
-				this.$refs[formName].resetFields();
+		},
+		watch: {
+			vgoods(newData) {
+				this.goods = newData;
 			},
-			async getCate() {
-				const res = await GetCate();
-				this.options = res.data.map((item) => {
-					return { value: item.name, label: item.name, children: item.subCate };
-				});
-				this.options.map((item) => {
-					item.children.map((v) => {
-						let newObj = {};
-						newObj.value = v.subName;
-						newObj.label = v.subName;
-						item.children.shift();
-						item.children.push(newObj);
-					});
-				});
+			sortCate() {
+				this.goods = this.goods.sort(this.compareSort(this.sortCate.type, this.sortCate.asc));
 			},
 		},
 		mounted: function() {
-			this.getCate();
+			// this.goods1 = this.vgoods;
 		},
 	};
 </script>
+
 <style lang="scss" scoped>
-	.release {
+	.goods-wrapper {
 		display: flex;
 		justify-content: center;
-		flex-direction: column;
 		align-items: center;
-		.form-wrapper {
+		width: 80vw;
+		.no-content {
 			width: 100%;
-			background: #f7f7f7;
+			transform: translateX(100px);
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			.demo-ruleForm {
-				margin: 30px;
-				width: 650px;
-				background: white;
-				padding: 10px 80px;
-				border-radius: 20px;
-				.title {
-					padding: 10px;
-					font-size: 1.4rem;
-					font-weight: 600;
+			flex-direction: column;
+			margin-bottom: 20px;
+			img {
+				display: block;
+			}
+			span {
+				color: #93999f;
+			}
+		}
+		.goods-container {
+			columns: 5;
+			column-gap: 30px;
+			margin: 30px auto;
+			.goods {
+				width: 100%px;
+				break-inside: avoid;
+				margin-top: 10px;
+				padding: 10px 0;
+				cursor: pointer;
+				.image {
+					transition: ease 0.3s;
+					object-fit: cover;
+					width: 100%;
+					cursor: pointer;
+					overflow: hidden;
 				}
-				.cate {
+				.image:hover {
+					transform: scale(1.1);
+				}
+				.good-intro {
 					display: flex;
-					.el-form-item__content {
-						margin: 0 !important;
+					flex-direction: column;
+					.good-name {
+						margin: 12px 6px 6px 6px;
 					}
-				}
-				.btn {
-					margin-top: 40px;
-				}
-				.avatar-uploader {
-					border: 1px dashed #d9d9d9;
-					border-radius: 6px;
-					cursor: pointer;
-					position: relative;
-					overflow: hidden;
-				}
-				.el-upload {
-					border: 1px dashed #d9d9d9;
-					border-radius: 6px;
-					cursor: pointer;
-					position: relative;
-					overflow: hidden;
-				}
-				.avatar-uploader {
-					border-color: #c2c2c2;
-				}
-				.el-upload:hover {
-					border-color: #409eff;
-				}
-				.avatar-uploader-icon {
-					font-size: 28px;
-					color: #8c939d;
-					width: 178px;
-					height: 178px;
-					line-height: 178px;
-					text-align: center;
-				}
-				.avatar {
-					width: 178px;
-					height: 178px;
-					display: block;
+					.good-info {
+						display: flex;
+						justify-content: space-around;
+						font-size: 0.4rem;
+						color: #93999f;
+						margin: 5px 0;
+						span {
+							margin: 0 0 0 14px;
+						}
+						time {
+							margin-left: -8px;
+						}
+					}
+					.good-desc {
+						display: -webkit-box;
+						text-align: left;
+						letter-spacing: 1px;
+						color: #93999f;
+						font-size: 0.7rem;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						word-wrap: break-word;
+						word-break: break-all;
+						-webkit-line-clamp: 3; //块元素显示的文本行数
+						-webkit-box-orient: vertical;
+						margin: 5px 0;
+						padding: 0 0 0 4px;
+					}
+					.good-price {
+						color: #2a9d8f;
+						margin: 2px 0;
+					}
 				}
 			}
 		}

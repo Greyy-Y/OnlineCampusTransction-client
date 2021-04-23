@@ -23,7 +23,7 @@
 			</div>
 			<div class="nav-sub-wrapper">
 				<div class="nav-sub">
-					<div class="serchbar"><searchbar /></div>
+					<div class="serchbar"><searchbar @find-goods-by-name="findGoodsByname" /></div>
 					<div class="publish">
 						<el-dropdown @command="handleCommand">
 							<span class="el-dropdown-link"> 发布<i class="el-icon-arrow-down el-icon--right"></i> </span>
@@ -33,7 +33,7 @@
 							</el-dropdown-menu>
 						</el-dropdown>
 					</div>
-					<div class="avatar">
+					<div class="avatar" v-if="this.$store.state.isLogin">
 						<el-avatar size="medium" :src="this.$store.getters.getAvatar"></el-avatar>
 						<span class="username" @click="handlePersonal">{{ this.$store.state.userName }}</span>
 					</div>
@@ -68,7 +68,9 @@
 			Searchbar,
 		},
 		data() {
-			return {};
+			return {
+				goodList: [],
+			};
 		},
 		methods: {
 			handleSelect(key) {
@@ -90,7 +92,6 @@
 				}
 				this.$router.push(command);
 			},
-
 			logOut() {
 				// 清除session
 				sessionStorage.clear();
@@ -100,7 +101,7 @@
 					type: "success",
 					message: "成功退出",
 				});
-				this.$router.push("Index");
+				this.$router.push("/index");
 			},
 			handlePersonal() {
 				if (this.$store.state.userID) {
@@ -116,6 +117,11 @@
 			handleToMyCary() {
 				console.log("tocart");
 				this.$router.push("/myCart");
+			},
+			findGoodsByname(goodList) {
+				this.goodList = goodList;
+				console.log(this.goodList);
+				this.$emit("find-goods-by-name", this.goodList);
 			},
 		},
 	};

@@ -3,7 +3,6 @@
 		<Navbar />
 		<IndexMain class="banner" />
 		<Footer />
-		<!-- <Menu /> -->
 	</div>
 </template>
 
@@ -13,7 +12,6 @@
 	import IndexMain from "@/components/IndexMain";
 	import Navbar from "@/components/Navbar";
 	import Footer from "@/components/Footer";
-	// import Menu from "@/components/menuContent";
 
 	export default {
 		name: "Index",

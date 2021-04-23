@@ -103,8 +103,6 @@
 <style scoped lang="scss">
 	* {
 		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
 	}
 	.validate {
 		color: #2a9d8f;
@@ -113,7 +111,7 @@
 
 	.container-wrapper {
 		width: 100%;
-		height: 95vh;
+		height: 100vh;
 		display: flex;
 		justify-content: center;
 		align-items: center;

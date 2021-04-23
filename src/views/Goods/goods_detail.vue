@@ -119,6 +119,13 @@
 				this.gid = this.$route.params.gid;
 			},
 			async addToCart() {
+				if (!this.$store.state.isLogin) {
+					this.$message({
+						type: "warning",
+						message: "请登录后再进行操作!",
+					});
+					return;
+				}
 				let data = {
 					uid: this.$store.state.userID,
 					goodId: this.gid,

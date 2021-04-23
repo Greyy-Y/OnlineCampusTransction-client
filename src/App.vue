@@ -16,9 +16,8 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		text-align: center;
-		color: #2c3e50;
+		overflow: hidden;
 	}
-
 	.v-enter {
 		opacity: 0.8;
 	}
@@ -38,12 +37,32 @@
 		transition: 0.5s;
 	}
 
-	//隐藏滚动条
+	// 隐藏滚动条
+	// ::-webkit-scrollbar {
+	// 	width: 0 !important;
+	// }
+	// ::-webkit-scrollbar {
+	// 	width: 0 !important;
+	// 	height: 0;
+	// }
+
 	::-webkit-scrollbar {
-		width: 0 !important;
+		width: 10px;
+		height: 10px;
+		/**/
 	}
-	::-webkit-scrollbar {
-		width: 0 !important;
-		height: 0;
+	::-webkit-scrollbar-track {
+		background: rgb(239, 239, 239);
+		border-radius: 2px;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #bfbfbf;
+		border-radius: 10px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: #333;
+	}
+	::-webkit-scrollbar-corner {
+		background: #e2e2e2;
 	}
 </style>

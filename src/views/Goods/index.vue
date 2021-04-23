@@ -1,9 +1,19 @@
 <template>
 	<div class="app">
-		<Navbar />
-		<Menu @sort-type="sort" />
+		<Navbar @find-goods-by-name="findGoodsByName" />
+		<Menu @sort-type="sort" @cate-goodlist="updateGoodList" @reset-goodlist="resetGoodList" />
 		<div class="goods">
+			<el-backtop target=".goods"></el-backtop>
 			<ProductCard :vgoods="vgoods" :sortCate="sortCate" />
+			<el-pagination
+				v-if="vgoods.length != 0"
+				background
+				layout="prev, pager, next"
+				:total="goods.length"
+				:page-size="20"
+				@current-change="handlePageChange"
+			>
+			</el-pagination>
 		</div>
 		<Footer />
 	</div>
@@ -29,6 +39,7 @@
 				goods: [],
 				vgoods: [],
 				sortCate: {},
+				baseUrl: "",
 			};
 		},
 		methods: {
@@ -37,16 +48,47 @@
 				this.goods = res.data.data;
 				// 更新商品图片路径 ，日期格式
 				this.goods.map((item) => {
-					item.pic.forEach((element) => {
-						item.pic = "http://localhost:3000/" + element;
-					});
 					item.date = this.dayjs(item.createdAt).unix();
 					item.createdAt = this.dayjs(item.createdAt).format("YYYY-MM-DD");
 				});
+				this.goods = this.goods.sort(this.compareSort("date", false));
 			},
 			// 子组件传递的菜单排序字段
 			sort(item, status) {
 				this.sortType = { type: item, asc: status };
+			},
+			//子组件传递的特定目录的商品
+			updateGoodList(goodList) {
+				this.goods = goodList;
+			},
+			//重置商品列表（显示所有商品）
+			resetGoodList() {
+				this.getGoods();
+				console.log(this.goods);
+			},
+			findGoodsByName(goodList) {
+				this.goods = goodList;
+			},
+			handlePageChange(curPage) {
+				this.vgoods = this.goods.slice(0, curPage * 20);
+			},
+			// 排序
+			compareSort(prop, desc = false) {
+				return function(obj1, obj2) {
+					var val1 = obj1[prop];
+					var val2 = obj2[prop];
+					if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+						val1 = Number(val1);
+						val2 = Number(val2);
+					}
+					if (desc == true) {
+						// 升序排列
+						return val1 - val2;
+					} else {
+						// 降序排列
+						return val2 - val1;
+					}
+				};
 			},
 		},
 		watch: {
@@ -54,7 +96,7 @@
 				this.sortCate = this.sortType;
 			},
 			goods() {
-				this.vgoods = this.goods;
+				this.vgoods = this.goods.slice(0, 20);
 			},
 		},
 		mounted: function() {
@@ -71,6 +113,8 @@
 		align-items: center;
 		.goods {
 			display: flex;
+			flex-direction: column;
+			overflow: auto;
 		}
 	}
 </style>

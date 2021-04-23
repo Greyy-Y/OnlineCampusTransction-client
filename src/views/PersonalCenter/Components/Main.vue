@@ -12,7 +12,7 @@
 
 <style lang="scss" scoped>
 	.info1 {
-		width: 850px;
+		width: 100%;
 		background: white;
 		height: 700px;
 		overflow: scroll;

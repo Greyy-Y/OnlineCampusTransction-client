@@ -15,7 +15,7 @@
 							</div>
 						</div>
 						<div class="recommend-item-pic">
-							<img :src="item.good.pic" />
+							<img :src="baseUrl + item.good.pic" />
 						</div>
 					</div>
 				</el-carousel-item>
@@ -30,7 +30,7 @@
 					v-for="(item, index) in featuredItem"
 					:key="index"
 					:gid="item.good._id"
-					:imgSrc="item.good.pic"
+					:imgSrc="baseUrl + item.good.pic"
 					:productName="item.good.name"
 					:productPrice="item.good.price"
 					:updatedAt="item.good.updatedAt"
@@ -56,6 +56,8 @@
 				recommendItem: [],
 				//精选商品
 				featuredItem: [],
+				// baseUrl: "http://localhost:3000/",
+				baseUrl:this.baseUrl,
 			};
 		},
 		methods: {
@@ -67,9 +69,6 @@
 				this.recommendItem = data;
 				//循环遍历 更新推荐商品图片路径
 				this.recommendItem.map((item) => {
-					item.good.pic.forEach((value) => {
-						item.good.pic = "http://localhost:3000/" + value;
-					});
 					item.good.updatedAt = this.dayjs(item.good.updatedAt).format("YYYY-MM-DD");
 				});
 				this.loading = false;
@@ -81,9 +80,6 @@
 				this.featuredItem = data;
 				//循环遍历 更新推荐商品图片路径
 				this.featuredItem.map((item) => {
-					item.good.pic.forEach((element) => {
-						item.good.pic = "http://localhost:3000/" + element;
-					});
 					item.good.updatedAt = this.dayjs(item.good.updatedAt).format("YYYY-MM-DD");
 				});
 			},

@@ -17,8 +17,8 @@
 			<div class="subMenu" v-show="this.in" @mouseover="addActiveSub()" @mouseout="removeActiveSub()">
 				<el-divider class="divider">{{ cateName }}</el-divider>
 				<div class="subCate-container">
-					<div class="subCate" v-for="(item, index) in subCate" :key="index" @click="findByCate(item)">
-						<img src="../assets/defalult-avtar.jpg" />
+					<div class="subCate" v-for="(item, index) in subCate" :key="index" @click="handleCilckTag(item)">
+						<img :src="baseUrl + item.pic" />
 						<a>{{ item.subName }}</a>
 					</div>
 				</div>
@@ -59,6 +59,7 @@
 
 <script>
 	import { GetCate } from "@/api/categories";
+	import { FindByCate } from "@/api/goods";
 	export default {
 		data() {
 			return {
@@ -71,13 +72,13 @@
 				cate: [],
 				banner: [
 					{
-						pic: "http://localhost:3000/uploads/workhard.jpg",
+						pic: "http://localhost:3000/uploads/STAR.jpeg",
 					},
 					{
 						pic: "http://localhost:3000/uploads/green.jpg",
 					},
 					{
-						pic: "http://localhost:3000/uploads/996.jpeg",
+						pic: "http://localhost:3000/uploads/bridge.jpeg",
 					},
 				],
 				// 搜索标签
@@ -89,7 +90,8 @@
 					{ name: "浏览量", value: "viewed" },
 				],
 				isActiveOrder: 0,
-				orderStatus: true,
+				orderStatus: false,
+				baseUrl: "http://localhost:3000",
 			};
 		},
 		methods: {
@@ -116,17 +118,30 @@
 
 				this.cate = res.data;
 			},
-			findByCate(item) {
-				if (this.tags.includes(item.subName)) {
-					return;
-				}
-				this.tags.push(item.subName);
+			async findByCate(data) {
+				const res = await FindByCate(data);
+				//根据响应更新商品列表
+				res.data.good.map((item) => {
+					item.date = this.dayjs(item.createdAt).unix();
+					item.createdAt = this.dayjs(item.createdAt).format("YYYY-MM-DD");
+				});
+				this.$emit("cate-goodlist", res.data.good);
 			},
+			handleCilckTag(item) {
+				this.tags = [];
+				this.tags.push(item.subName);
+				this.inSubMenu = false;
+				//发起查询属于该目录的商品请求
+				this.findByCate({ cateID: item._id });
+			},
+			// 获取特定目录商品列表
+
 			// 标签关闭移除该标签
 			handleClose(tag) {
 				this.tags.splice(this.tags.indexOf(tag), 1);
+				this.$emit("reset-goodlist");
 			},
-			// 点击排序
+			// 点击更换商品排序
 			handlePick(index, item) {
 				this.isActiveOrder = index;
 				this.$emit("sort-type", item.value, this.orderStatus);
@@ -161,6 +176,7 @@
 			border-radius: 10px 0 0 10px;
 			color: #acacac;
 			overflow: scroll;
+			// 隐藏滚动条
 			.item {
 				list-style: none;
 				display: flex;
@@ -182,21 +198,20 @@
 		.banner {
 			box-shadow: 2px 2px 10px #7a7a7a;
 			position: relative;
-			width: 1100px;
+			width: 100%;
 			display: flex;
 			flex-direction: column;
 			img {
-				width: 1100px;
+				width: 100%;
 				height: 370px;
 				object-fit: fill;
 			}
 			.order-container {
-				width: 1100px;
 				height: 70px;
 				display: flex;
 				flex-direction: column;
 				.order-tag {
-					margin: 8px 10px;
+					margin: 8px 20px;
 					height: 20px;
 					display: flex;
 					justify-content: flex-start;
@@ -255,5 +270,12 @@
 				}
 			}
 		}
+	}
+	::-webkit-scrollbar {
+		width: 0 !important;
+	}
+	::-webkit-scrollbar {
+		width: 0 !important;
+		height: 0;
 	}
 </style>

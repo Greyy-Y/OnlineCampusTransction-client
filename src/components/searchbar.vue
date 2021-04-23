@@ -1,22 +1,30 @@
 <template>
-	<form class="search-container" action="#">
-		<input id="search-box" type="text" class="search-box" name="q" />
+	<form class="search-container" @submit.prevent="submitForm">
+		<input id="search-box" type="text" class="search-box" name="q" v-model="value" />
 		<label for="search-box"><span class="iconfont icon-search"></span></label>
 		<input type="submit" id="search-submit" />
 	</form>
 </template>
 
 <script>
+	import { GetGoodsByName } from "@/api/goods";
 	export default {
 		name: "searchBar",
 		data() {
 			return {
 				open: false,
+				value: "",
 			};
 		},
 		methods: {
 			handleClick() {
 				this.open = true;
+			},
+			async submitForm() {
+				console.log(this.value);
+				const res = await GetGoodsByName(this.value);
+				this.$emit("find-goods-by-name", res.data.good);
+				this.$router.push("/goods").catch((err) => err);
 			},
 		},
 	};
@@ -24,7 +32,6 @@
 
 <style lang="scss" scoped>
 	$tl: 0.6s; // transition length
-
 	.search-box {
 		transition: width $tl, border-radius $tl, background $tl, box-shadow $tl;
 		width: 40px;

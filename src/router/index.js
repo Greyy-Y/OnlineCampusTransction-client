@@ -49,9 +49,16 @@ const routes = [
 	},
 	//发布商品
 	{
-		path: "/releaseGoods",
+		path: "/releaseGoods/",
 		name: "ReleaseGoods",
 		component: () => import("../views/ReleaseGoods/index.vue"),
+	},
+	//修改发布商品
+	{
+		path: "/editGood/:gid",
+		name: "EditGood",
+		// component: EditGood,
+		component: () => import("../views/EditGood/index.vue"),
 	},
 	//发布求购
 	{
@@ -59,6 +66,7 @@ const routes = [
 		name: "ReleaseWanted",
 		component: () => import("../views/ReleaseWanted/index.vue"),
 	},
+
 	//个人中心
 	{
 		path: "/personalCenter",
@@ -85,7 +93,35 @@ const routes = [
 				name: "MyCart",
 				component: () => import("../views/PersonalCenter/Components/MyCart.vue"),
 			},
+			{
+				path: "/myOrder",
+				name: "MyOrder",
+				component: () => import("../views/PersonalCenter/Components/MyOrder.vue"),
+			},
+			{
+				path: "/myNotice",
+				name: "MyNotice",
+				component: () => import("../views/PersonalCenter/Components/MyNotice.vue"),
+			},
 		],
+	},
+	// 生成订单
+	{
+		path: "/createOrder",
+		name: "CreateOrder",
+		component: () => import("../views/Order/newOrder.vue"),
+	},
+	// 订单支付
+	{
+		path: "/toPay/",
+		name: "ToPay",
+		component: () => import("../views/Order/toPay.vue"),
+	},
+	// 订单详情
+	{
+		path: "/orderDetail/:oid",
+		name: "OrderDetail",
+		component: () => import("../views/Order/orderDetail.vue"),
 	},
 ];
 

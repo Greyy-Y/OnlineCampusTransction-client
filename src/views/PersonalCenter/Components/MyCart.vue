@@ -1,7 +1,8 @@
 <template>
 	<div class="mycart-wrapper">
 		<div class="empty" v-if="!this.$store.getters.getCartLen">
-			<span>购物车空空如也</span> <el-button>现在选购</el-button>
+			<img src="../../../assets/img/nogood.png" alt="" />
+			<span>购物车空空如也~</span> <el-button @click="toGoods">现在选购</el-button>
 		</div>
 		<div class="cart" v-else>
 			<div class="mycart-box">
@@ -14,7 +15,7 @@
 					@select="handleSelect"
 				>
 					<el-table-column type="selection" width="50"> </el-table-column>
-					<el-table-column label="商品信息" width="330" show-overflow-tooltip>
+					<el-table-column label="商品信息" width="480" show-overflow-tooltip>
 						<template slot-scope="scope">
 							<div class="good-info">
 								<img :src="baseUrl + scope.row.good.pic" /><span>{{ scope.row.good.name }}</span>
@@ -37,7 +38,7 @@
 							></el-input-number
 						></template>
 					</el-table-column>
-					<el-table-column label="小计/￥" show-overflow-tooltip width="80" align="center"
+					<el-table-column label="小计/￥" show-overflow-tooltip width="100" align="center"
 						><template slot-scope="scope">{{ scope.row.count * scope.row.good.price }}</template>
 					</el-table-column>
 					<el-table-column label="操作" overflow>
@@ -54,7 +55,6 @@
 			</div>
 			<div class="mycart-bottom">
 				<div class="clear">
-					<!-- <span @click="removeSelectedGoods">删除选中商品</span> -->
 					<span @click="emptyCart">清空购物车</span>
 				</div>
 				<div class="total">
@@ -70,7 +70,7 @@
 					</div>
 				</div>
 				<div class="settle">
-					<el-button type="primary" size="small">提交订单</el-button>
+					<el-button type="primary" @click="handleSubmitOrder">结算</el-button>
 				</div>
 			</div>
 		</div>
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-	import { GetMyCart, RemoveGoodFromCart, UpdateMyCart, EmptyMyCart } from "@/api/user";
+	import { GetMyCart, RemoveGoodFromCart, RemoveGoodsFromCart, UpdateMyCart, EmptyMyCart } from "@/api/user";
 	export default {
 		data() {
 			return {
@@ -108,15 +108,28 @@
 			},
 			// 清空购物车
 			emptyCart() {
-				this.$alert("是否要清空购物车？", {
-					callback: (action) => {
+				this.$confirm("确认清空购物车?", "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
+					type: "warning",
+				})
+					.then(() => {
 						EmptyMyCart({ uid: this.$store.state.userID });
 						this.myCart = [];
 						this.$store.commit("emptyMyCart");
-					},
-				});
+						this.$message({
+							type: "success",
+							message: "删除成功!",
+						});
+					})
+					.catch(() => {
+						this.$message({
+							type: "info",
+							message: "已取消删除",
+						});
+					});
 			},
-			// 删除选中商品
+			// 删除选中商品;
 			async handleRemoveGoodFromCart(gid) {
 				let data = {
 					uid: this.$store.state.userID,
@@ -135,6 +148,7 @@
 				});
 				//
 			},
+
 			// 表格
 			toggleSelection(rows) {
 				if (rows) {
@@ -166,6 +180,34 @@
 					this.$store.commit("setMyCart", { cart: this.myCart });
 				});
 			},
+			async handleSubmitOrder() {
+				if (this.multipleSelection.length == 0) {
+					this.$message({
+						type: "warning",
+						message: "请选择商品！",
+					});
+					return;
+				}
+				// 从购物车中移除选择的商品
+				console.log(this.multipleSelection);
+				let toDeleteOid = this.multipleSelection.map((v) => {
+					return v.good._id;
+				});
+				let data = {
+					uid: this.$store.state.userID,
+					goodId: toDeleteOid,
+				};
+				await RemoveGoodFromCart(data);
+				// 更新vuex购物车
+				this.getMyCart().then(() => {
+					this.$store.commit("setMyCart", { cart: this.myCart });
+				});
+				// 跳转到订单页面;
+				this.$router.push({ name: "CreateOrder", params: { order: this.multipleSelection } });
+			},
+			toGoods() {
+				this.$router.push("/goods");
+			},
 		},
 
 		mounted: function() {
@@ -176,7 +218,6 @@
 				this.newMyCart = newData;
 			},
 			multipleSelection(newData) {
-				console.log(newData);
 				this.selectCount = 0;
 				this.total = 0;
 				for (let index = 0; index < newData.length; index++) {
@@ -185,6 +226,23 @@
 					this.total += element.count * element.good.price;
 				}
 			},
+			/*
+				可以使用深度监听监听对象内值的变化
+				处理函数改为，handler，同时开启deep 属性
+				multipleSelection: {
+					handler: function(newData, oldData) {
+						console.log(newData);
+						this.selectCount = 0;
+						this.total = 0;
+						for (let index = 0; index < newData.length; index++) {
+							const element = newData[index];
+							this.selectCount += element.count;
+							this.total += element.count * element.good.price;
+						}
+					},
+					deep: true,
+				},
+				 */
 		},
 	};
 </script>
@@ -236,7 +294,7 @@
 			}
 			.total {
 				display: flex;
-				margin: 0 10px;
+				margin-left: 100px;
 				align-items: center;
 				justify-content: space-evenly;
 				color: #93999f;
@@ -260,7 +318,7 @@
 				}
 			}
 			.settle {
-				margin: 0 10px;
+				margin-left: 100px;
 			}
 		}
 		.empty {
@@ -269,7 +327,15 @@
 			flex-direction: column;
 			span {
 				margin: 10px 0;
+				color: #93999f;
 			}
+		}
+		::-webkit-scrollbar {
+			width: 0 !important;
+		}
+		::-webkit-scrollbar {
+			width: 0 !important;
+			height: 0;
 		}
 	}
 </style>

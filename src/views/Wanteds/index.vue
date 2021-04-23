@@ -3,24 +3,27 @@
 		<Navbar />
 		<div class="wanted-container">
 			<div class="wanted-item" v-for="(item, index) in wanteds" :key="index">
-				<div class="info">
-					<div class="avatar">
-						<el-avatar icon="el-icon-user-solid" :src="item.uid.avatar"></el-avatar>
+				<div class="" v-if="item.display">
+					<div class="info">
+						<div class="avatar">
+							<el-avatar icon="el-icon-user-solid" :src="baseUrl + item.uid.avatar"></el-avatar>
+						</div>
+						<div class="user">
+							<div class="name">{{ item.uid.nickName }}</div>
+						</div>
+						<div class="time">更新于{{ item.modifyTime }}</div>
 					</div>
-					<div class="user">
-						<div class="name">{{ item.uid.nickName }}</div>
-					</div>
-					<div class="time">更新于{{ item.modifyTime }}</div>
-				</div>
-				<div class="content-box-wrapper">
-					<div class="content-box">
-						<div class="title">{{ item.name }}</div>
-						<div class="desc">{{ item.desc }}</div>
-						<div class="budget">预算：{{ item.budget }}</div>
-						<div class="contact">{{ item.contact }}</div>
-					</div>
-					<div class="pic" v-if="item.pic[0] !== undefined">
-						<el-image style="width: 100px; height: 100px" :src="item.pic[0]" :preview-src-list="item.pic"> </el-image>
+					<div class="content-box-wrapper">
+						<div class="content-box">
+							<div class="title">{{ item.name }}</div>
+							<div class="desc">{{ item.desc }}</div>
+							<div class="budget">预算：{{ item.budget }}</div>
+							<div class="contact">{{ item.contact }}</div>
+						</div>
+						<div class="pic" v-if="item.pic[0] !== undefined">
+							<el-image style="width: 100px; height: 100px" :src="baseUrl + item.pic[0]" :preview-src-list="item.pic">
+							</el-image>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -42,6 +45,7 @@
 		data() {
 			return {
 				wanteds: [],
+				baseUrl: "http://localhost:3000/",
 			};
 		},
 		methods: {
@@ -50,11 +54,8 @@
 				this.wanteds = res.data.data;
 				this.wanteds.map((v) => {
 					v.modifyTime = this.dayjs(v.modifyTime).format("YYYY-MM-DD");
-					if (v.pic[0] !== undefined) {
-						v.pic[0] = "http://localhost:3000/" + v.pic[0];
-					}
-					v.uid.avatar = "http://localhost:3000" + v.uid.avatar;
 				});
+				this.wanteds = this.wanteds.reverse();
 			},
 		},
 		mounted: function() {
@@ -74,6 +75,7 @@
 			align-items: center;
 			flex-direction: column;
 			margin: 10px 0;
+			min-height: 90vh;
 			.wanted-item {
 				width: 70%;
 				// height: 230px;

@@ -68,7 +68,6 @@
 									type: "success",
 									message: "登录成功！",
 								});
-								console.log(res);
 								// 更新vuex里的全局变量
 								this.$store.commit("login", {
 									ID: res.data.user.id,
@@ -110,8 +109,8 @@
 	}
 
 	.container-wrapper {
-		width: 100%;
-		height: 95vh;
+		width: 100vw;
+		height: 100vh;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -119,6 +118,7 @@
 		overflow: hidden;
 		transform-style: preserve-3d;
 		background: rgb(224, 224, 224);
+		overflow: hidden;
 	}
 
 	.container {
