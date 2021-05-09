@@ -37,27 +37,28 @@
 							<span>小结</span>
 						</div>
 						<div class="goods" v-for="(goodItem, index) in goods" :key="index">
-							<div class="name">{{ goodItem.good.name }}</div>
-							<div class="price">￥{{ goodItem.good.price }}</div>
-							<div class="count">{{ goodItem.count }}</div>
-							<div class="total">￥{{ goodItem.count * goodItem.good.price }}</div>
+							<span>{{ goodItem.good.name }}</span>
+							<span>￥{{ goodItem.good.price }}</span>
+							<span>{{ goodItem.count }}</span>
+							<span>￥{{ goodItem.count * goodItem.good.price }}</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<Footer />
+		<!-- <Footer /> -->
 	</div>
 </template>
 
 <script>
 	import { GetOrderById, OrderPayed } from "@/api/order";
 	import { NewNotice } from "@/api/notice";
-	import Footer from "@/components/Footer";
+	import { DecCount } from "@/api/goods";
+	// import Footer from "@/components/Footer";
 	import Navbar from "@/components/Navbar";
 	export default {
 		components: {
-			Footer,
+			// Footer,
 			Navbar,
 		},
 		data() {
@@ -102,6 +103,10 @@
 			async newNotice(data) {
 				await NewNotice(data);
 			},
+			async decCount(data) {
+				const res = await DecCount(data);
+				console.log(res);
+			},
 			async pay() {
 				let data = {
 					oid: this.oid,
@@ -124,7 +129,12 @@
 							orderTime: this.order.orderTime,
 							address: this.order.address[0],
 						};
+						let decData = {
+							gid: this.order.goods[i].good._id,
+							count: this.order.goods[i].count,
+						};
 						this.newNotice(noticeData);
+						this.decCount(decData);
 					}
 				} else {
 					this.$message({
@@ -151,11 +161,13 @@
 <style lang="scss" coped>
 	.to-pay-wrapper {
 		width: 100%;
+		height: calc(100% - 30px);
 		.to-pay {
 			background: #f7f7f7;
 			width: 100%;
+			height: 100%;
 			display: flex;
-			justify-content: center;
+			// justify-content: center;
 			align-items: center;
 			flex-direction: column;
 			.to-pay-top {
@@ -298,24 +310,20 @@
 							justify-content: space-around;
 							padding: 10px;
 							span {
-								margin-right: 20px;
-								width: 360px;
+								flex: 1;
+							}
+							span:nth-child(1) {
+								flex: 3;
 							}
 						}
 						.goods {
 							display: flex;
 							padding: 10px 0;
-							.name {
-								width: 360px;
-								text-align: left;
+              span {
+								flex: 1;
 							}
-							.price {
-								width: 360px;
-								text-align: left;
-							}
-							.count {
-								width: 360px;
-								text-align: left;
+							span:nth-child(1) {
+								flex: 3;
 							}
 						}
 					}
